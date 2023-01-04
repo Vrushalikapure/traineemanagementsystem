@@ -1,65 +1,46 @@
 package com.lexisnexis.tms.service;
 
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
+import java.util.Optional;
 
-import com.lexisnexis.tms.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.User;
-import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.exception.BlogAPIException;
-import com.lexisnexis.tms.repository.LoginTableRepository;
 import com.lexisnexis.tms.repository.UserRepository;
-import com.lexisnexis.tms.repository.WorkHistoryRepository;
+import com.lexisnexis.tms.utils.PasswordEncrpt;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository repository;
 
 	@Autowired
-	WorkHistoryRepository workHistoryRepository;
-
-	@Autowired
-	LoginTableRepository loginTableRepository;
+	private PasswordEncrpt passwordEncrpt;
 
 	@Override
-	public String registerNewUser(User user) throws NoSuchAlgorithmException {
+	public User saveUser(User user) throws NoSuchAlgorithmException {
+		String encryptPass = passwordEncrpt.encryptPass(user.getPassword());
+		user.setPassword(encryptPass);
+		System.out.print(encryptPass);
+		return repository.save(user);
+	}
 
-		// add check for username exists in database
-		if (userRepository.existsByUserName(user.getUserName())) {
-			throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
-		} else {
-			userRepository.save(user);
+	@Override
+	public void updateUser(User user, String userName) {
+		Optional<User> findedUser = repository.findById(userName);
+		User newUser = findedUser.get();
+		if (userName.equals(newUser.getUserName())) {
+			newUser.setUserName(userName);
+			newUser.setFirstName(user.getFirstName());
+			newUser.setLastName(user.getLastName());
+			newUser.setEmail(user.getEmail());
+			newUser.setLocation(user.getLocation());
+			newUser.setMobileNo(user.getMobileNo());
+			repository.save(newUser);
 		}
-		return "User registered successfully!.";
+		
 	}
 
-	public WorkHistory updateWorkHistory(WorkHistory workHistory) {
-
-		UserLogin loginTable1 = loginTableRepository.findByUserName(workHistory.getUserName());
-		LocalDateTime loginTime = loginTable1.getLoginTime();
-		LocalDateTime lastUpdate = loginTable1.getLastUpdatedTime();
-
-		workHistory.setCreatedTimestamp(loginTime);
-		workHistory.setLastUpdatedTimestamp(lastUpdate);
-		WorkHistory work = workHistoryRepository.save(workHistory);
-		return work;
-	}
-
-	public User getUserDetails(String userName) throws UserNotFoundException {
-
-	User user = userRepository.findByUserName(userName);
-
-		if (user != null) {
-		return user;
-	} else {
-		throw new UserNotFoundException("user not found with userName : " + userName);
-	}
-	}
 }
