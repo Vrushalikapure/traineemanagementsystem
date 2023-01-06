@@ -12,8 +12,11 @@ public interface EmpRepo extends CrudRepository<User, String> {
 
 	public User findByPassword(String password);
 	
+<<<<<<< HEAD
 	Boolean existsByUserName(String userName);
    
 	
+=======
+>>>>>>> master
 	
 }
