@@ -1,6 +1,5 @@
 package com.lexisnexis.tms.exception;
 
-
 import org.springframework.http.HttpStatus;
 
 public class BlogAPIException extends RuntimeException{

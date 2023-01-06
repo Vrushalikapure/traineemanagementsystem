@@ -3,7 +3,6 @@ package com.lexisnexis.tms.service;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
-import com.lexisnexis.tms.exception.BlogAPIException;
 import com.lexisnexis.tms.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,21 +11,22 @@ import org.springframework.stereotype.Service;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.repository.EmpRepo;
-import com.lexisnexis.tms.repository.LoginRepo;
+import com.lexisnexis.tms.exception.BlogAPIException;
+import com.lexisnexis.tms.repository.LoginTableRepository;
+import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	EmpRepo userRepository;
+	UserRepository userRepository;
 
 	@Autowired
 	WorkHistoryRepository workHistoryRepository;
 
 	@Autowired
-	LoginRepo loginTableRepository;
+	LoginTableRepository loginTableRepository;
 
 	@Override
 	public String registerNewUser(User user) throws NoSuchAlgorithmException {
@@ -44,10 +44,10 @@ public class UserServiceImpl implements UserService {
 
 		UserLogin loginTable1 = loginTableRepository.findByUserName(workHistory.getUserName());
 		LocalDateTime loginTime = loginTable1.getLoginTime();
-//		LocalDateTime lastUpdate = loginTable1.getLastUpdatedTime();
+		LocalDateTime lastUpdate = loginTable1.getLastUpdatedTime();
 
 		workHistory.setCreatedTimestamp(loginTime);
-//		workHistory.setLastUpdatedTimestamp(lastUpdate);
+		workHistory.setLastUpdatedTimestamp(lastUpdate);
 		WorkHistory work = workHistoryRepository.save(workHistory);
 		return work;
 	}
