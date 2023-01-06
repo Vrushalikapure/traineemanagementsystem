@@ -1,0 +1,33 @@
+server:
+    port: 9090
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    name: tmss
+    password: root
+   # url: jdbc:mysql://localhost:3306/tms?serverTimezone=UTC
+    url: jdbc:mysql://10.143.134.41:3306/tmss?serverTimezone=UTC
+    username: root
+  jpa:
+    hibernate:
+      #naming:
+        #physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+        format_sql: true
+    show-sql: true
+
+    
+logging:
+  file:
+    name: logback.log
+    path: /Logs/
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+         
