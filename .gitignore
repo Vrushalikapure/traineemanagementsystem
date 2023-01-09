@@ -1,12 +1,8 @@
 HELP.md
 target/
-<<<<<<< HEAD
-.metadata
-=======
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
->>>>>>> master
 
 ### STS ###
 .apt_generated
@@ -30,11 +26,8 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-<<<<<<< HEAD
-=======
 !**/src/main/**/build/
 !**/src/test/**/build/
->>>>>>> master
 
 ### VS Code ###
 .vscode/
