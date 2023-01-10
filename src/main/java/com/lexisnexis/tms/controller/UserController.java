@@ -1,15 +1,12 @@
 package com.lexisnexis.tms.controller;
-
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.UserNotLoginException;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
@@ -135,11 +132,10 @@ public class UserController {
 		return new ResponseEntity<String>(forgotPassword, HttpStatus.OK);
 	}
 
-	@PostMapping("/changePassword")
-	public ResponseEntity<String> changePassword(@RequestBody ChangePassword changePassword)
+	@PostMapping("/changePassword/{userName}")
+	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody ChangePassword changePassword)
 			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching {
-		String userName="priyanka8";
-		System.out.println(userName+"----------sam--------");
+		//String userName="priyanka8";
 		String password = userService.changePassword(userName,changePassword);
 		return new ResponseEntity<String>(password, HttpStatus.OK);
 	}
