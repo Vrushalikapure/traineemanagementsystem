@@ -1,6 +1,7 @@
 package com.lexisnexis.tms.advice;
 
 import com.lexisnexis.tms.exception.BlogAPIException;
+import com.lexisnexis.tms.exception.UserAlreadyHasAccount;
 import com.lexisnexis.tms.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,4 +39,20 @@ public class ApplicationExceptionHandler {
         errorMap.put("errorMessage", ex.getMessage());
         return errorMap;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserAlreadyHasAccount.class)
+    public Map<String,String> EmployeeAlreadyHaveAccount(UserAlreadyHasAccount useraccount){
+        HashMap<String,String> map=new HashMap();
+        map.put("error",useraccount.getMessage());
+        return map;
+    }
+
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(UserNotFoundException.class)
+//    public Map<String,String> handleBussinessException(UserNotFoundException error){
+//        HashMap<String,String> map=new HashMap<>();
+//        map.put("error", error.getMessage());
+//        return map;
+//    }
 }

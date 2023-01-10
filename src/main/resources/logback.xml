@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <property name="PATTERN"
+              value='[%d{yyyy-MM-dd HH:mm:ss, UTC}][%level] %class{36}.%M %L - %msg' />
+    <appender name="consoleAppender"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${PATTERN} %n</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+    <appender name="consoleFileAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>C:\log4j/%d{yyyy-MM-dd}.%i.out</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${PATTERN} %n</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+    <appender name="alertsAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>C:/SpringBootPrograms/Assignment/logs/TMSAPP/%d{yyyy-MM-dd}.out
+            </fileNamePattern>
+            <maxHistory>1</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${PATTERN} %n</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+    </appender>
+    <root>
+        <appender-ref ref="consoleAppender" />
+        <appender-ref ref="consoleFileAppender" />
+        <appender-ref ref="alertsAppender" />
+    </root>
+
+
+
+
+
+
+
+    <logger name="log.milestone" additivity="false">
+        <appender-ref ref="consoleAppender" />
+        <appender-ref ref="consoleFileAppender" />
+        <appender-ref ref="alertsAppender" />
+    </logger>
+
+
+
+
+
+
+
+</configuration>
