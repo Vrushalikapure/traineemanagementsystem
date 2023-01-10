@@ -30,22 +30,16 @@ public class UserPdfExporter {
 		PdfPCell cell = new PdfPCell();
 		 cell.setPhrase(new Phrase("userName"));
 		 ptable.addCell(cell);
-		 
 		 cell.setPhrase(new Phrase("firstName"));
 		 ptable.addCell(cell);
-		 
 		 cell.setPhrase(new Phrase("lastName"));
 		 ptable.addCell(cell);
-		 
 		 cell.setPhrase(new Phrase("mobileNo"));
 		 ptable.addCell(cell);
-		 
 		 cell.setPhrase(new Phrase("email"));
 		 ptable.addCell(cell);
-		 
 		 cell.setPhrase(new Phrase("location"));
-		 ptable.addCell(cell);
-		 
+		 ptable.addCell(cell);	 
 	}
 
 	public void writeData(PdfPTable ptable) {

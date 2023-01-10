@@ -137,9 +137,6 @@ public class UserServiceImpl implements UserService {
 							   @RequestBody UserLogin userlogin) throws UserNotFoundException {
 
 		User user=userRepository.findByUserName(userlogin.getUserName());
-
-
-
 		userlogin.setUserName(emp.getUserName());
 		return loginRepository.save(userlogin);
 	}
@@ -179,33 +176,24 @@ public class UserServiceImpl implements UserService {
 	public String changePassword(String userName, ChangePassword changePassword)
 			throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching {
 		Optional<UserLogin> findById = loginRepository.findById(userName);
-
 		User user2 = userRepository.findById(userName).get();
 		String dbPass = user2.getPassword();
-
 		Boolean isLogin = findById.get().getLoginStatus();
 		String newpass = passwEncrypt.encryptPass(changePassword.getOldPassword());
-
-
 		if(isLogin==false)
 		{
 			throw new UserNotLoginException("User Not login this time");
 		}
 		else {
-
 			if(newpass.equals(dbPass)) {
 
 				user2.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
 				userRepository.save(user2);
 				LOGGER.debug("change password() completed ");
-
 			}
 			else {
-
 				throw new UserPasswordDoesNotMatching("User password does not matching");
-
 			}
-
 		}
 		return "Password Changed successfully";
 	}
