@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.lexisnexis.tms.entity.WorkHistory;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
 
-
-
 @Service
 public class PdfService {
 
@@ -19,6 +17,4 @@ public class PdfService {
 	public List<WorkHistory> getAll(){		
 		return workHistoryRepository.findAll();
 	}
-	
-
 }
