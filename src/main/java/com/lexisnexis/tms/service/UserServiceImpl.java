@@ -42,9 +42,9 @@ public class UserServiceImpl implements UserService {
 
 	public WorkHistory updateWorkHistory(WorkHistory workHistory) {
 
-		UserLogin loginTable1 = loginTableRepository.findByUserName(workHistory.getUserName());
-		LocalDateTime loginTime = loginTable1.getLoginTime();
-		LocalDateTime lastUpdate = loginTable1.getLastUpdatedTime();
+		UserLogin loginTable = loginTableRepository.findByUserName(workHistory.getUserName());
+		LocalDateTime loginTime = loginTable.getLoginTime();
+		LocalDateTime lastUpdate = loginTable.getLastUpdatedTime();
 
 		workHistory.setCreatedTimestamp(loginTime);
 		workHistory.setLastUpdatedTimestamp(lastUpdate);
