@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
 		LocalDateTime loginTime = loginTable1.getLoginTime();
 >>>>>>> 6ccfb5b867f943f04487a9e55cab9e4c8f68f196
 
+
 		workHistory.setCreatedTimestamp(loginTime);
 		WorkHistory work = workHistoryRepository.save(workHistory);
 		return work;
