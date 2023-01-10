@@ -1,87 +1,101 @@
 package com.lexisnexis.tms.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
-    @Entity
-    @Table(name = "user_login_history")
-    public class UserLogin {
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 
-        @Id
-        @Column(name="userName")
-        private String userName;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.stereotype.Component;
 
-        @Column(name = "failureAttempts")
-        private int failureAttempts;
+import com.lexisnexis.tms.bool.BooleanToYNStringConverter;
 
-        @Column(name="loginStatus")
-        private String loginStatus;
+@Component
+@Entity
+@Table(name = "user_login_history")
+public class UserLogin {
 
-        @Column(name="isLocked")
-        private String isLocked;
+	@Id
+	@Column(name = "user_Name")
+	private String userName;	
 
-        @Column(name="lockTime")
-        @UpdateTimestamp
-        private LocalDateTime lockTime;
+	@Column(name = "failure_Attempts")
+	private int failureAttempts;
+	
+	@Convert(converter = BooleanToYNStringConverter.class)
+	@Column(name = "login_Status", length = 2)
+	private Boolean loginStatus;
 
-        @Column(name="loginTime")
-        @CreationTimestamp
-        private LocalDateTime loginTime;
-
-        public int getFailureAttempts() {
-            return failureAttempts;
-        }
-
-        public void setFailureAttempts(int failureAttempts) {
-            this.failureAttempts = failureAttempts;
-        }
-
-        public String getLoginStatus() {
-            return loginStatus;
-        }
-
-        public void setLoginStatus(String loginStatus) {
-            this.loginStatus = loginStatus;
-        }
-
-        public String getIsLocked() {
-            return isLocked;
-        }
-
-        public void setIsLocked(String isLocked) {
-            this.isLocked = isLocked;
-        }
-
-        public LocalDateTime getLockTime() {
-            return lockTime;
-        }
-
-        public void setLockTime(LocalDateTime lockTime) {
-            this.lockTime = lockTime;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public LocalDateTime getLoginTime() {
-            return loginTime;
-        }
-
-        public void setLoginTime(LocalDateTime loginTime) {
-            this.loginTime = loginTime;
-        }
+	@Convert(converter = BooleanToYNStringConverter.class)
+	@Column(name = "is_Locked", length = 2)
+	private Boolean isLocked;
 
 
+	@Column(name = "lock_time")
+	private Date lockTime;
+
+	@Column
+	@CreationTimestamp
+	private LocalDateTime loginTime;
+
+	public Boolean getLoginStatus() {
+		return loginStatus;
+	}
+
+	public void setLoginStatus(Boolean loginStatus) {
+		this.loginStatus = loginStatus;
+	}
+
+	
+
+	public int getFailureAttempts() {
+		return failureAttempts;
+	}
+
+	public LocalDateTime getLoginTime() {
+		return loginTime;
+	}
+
+	public void setLoginTime(LocalDateTime loginTime) {
+		this.loginTime = loginTime;
+	}
+	public void setFailureAttempts(int failureAttempts) {
+		this.failureAttempts = failureAttempts;
+	}
+
+	public Boolean getIsLocked() {
+		return isLocked;
+	}
+
+	public void setIsLocked(Boolean isLocked) {
+		this.isLocked = isLocked;
+	}
+
+	public Date getLockTime() {
+		return lockTime;
+	}
+
+	public void setLockTime(Date lockTime) {
+		this.lockTime = lockTime;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	@PrePersist
+	public void onSave() {
+		LocalDateTime currdatetime = LocalDateTime.now();
+		this.loginTime = currdatetime;
+	}
 
 }
-
