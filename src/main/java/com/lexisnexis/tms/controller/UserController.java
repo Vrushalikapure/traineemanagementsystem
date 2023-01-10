@@ -139,8 +139,4 @@ public class UserController {
 		String password = userService.changePassword(userName,changePassword);
 		return new ResponseEntity<String>(password, HttpStatus.OK);
 	}
-
-
-
-
 }
