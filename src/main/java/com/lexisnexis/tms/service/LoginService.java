@@ -3,14 +3,11 @@ package com.lexisnexis.tms.service;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-import com.lexisnexis.tms.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lexisnexis.tms.dto.LoginDto;
-
-
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.repository.LoginRepository;
@@ -61,7 +58,6 @@ public class LoginService {
 		if (user1 == null) {
 			apiResponse.setData("User not exists please Register");
 			return apiResponse;
-//			passwEncrypt.encryptPass(user.getPassword())
 				
 		} else if (!user1.getPassword().equals(password)) {
 			if (userLogin.getFailureAttempts() < mAX_ATTEMPTS) {
@@ -74,23 +70,15 @@ public class LoginService {
 
 				userLogin.setIsLocked(Boolean.TRUE);
 				userLogin.setLockTime(new Date());
-//			
-//				Date date = userLogin.getLockTime();
-//			
 				apiResponse.setData("User Locked wait for 5 minutes");
 				return apiResponse;
 
 			}
-//			
-
 			apiResponse.setData("User login failed");
 			userLogin.setUserName(loginDto.getUserName());
-
 			userLogin.setLoginStatus(Boolean.FALSE);
 			userLogin.onSave();
-
 			loginRepository.save(userLogin);
-
 			return apiResponse;
 		}
 

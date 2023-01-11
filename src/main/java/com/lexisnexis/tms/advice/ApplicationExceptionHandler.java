@@ -43,16 +43,8 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserAlreadyHasAccount.class)
     public Map<String,String> EmployeeAlreadyHaveAccount(UserAlreadyHasAccount useraccount){
-        HashMap<String,String> map=new HashMap();
+        HashMap<String,String> map=new HashMap<String, String>();
         map.put("error",useraccount.getMessage());
         return map;
     }
-
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public Map<String,String> handleBussinessException(UserNotFoundException error){
-//        HashMap<String,String> map=new HashMap<>();
-//        map.put("error", error.getMessage());
-//        return map;
-//    }
 }
