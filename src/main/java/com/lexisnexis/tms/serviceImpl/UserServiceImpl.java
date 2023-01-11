@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.WorkHistory;
@@ -68,7 +67,6 @@ public class UserServiceImpl implements UserService {
 			throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
 		}
 	}
-
 
 	@Override
 	public List<User> fetchAllUserDetail() throws UserNotFoundException {
@@ -158,26 +156,33 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String changePassword(String userName, ChangePassword changePassword)
-			throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching {
+			throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching, UserNotLoginExceptions {
+
 		Optional<UserLogin> findById = loginRepository.findById(userName);
-		User user2 = userRepository.findById(userName).get();
-		String dbPass = user2.getPassword();
-		Boolean isLogin = findById.get().getLoginStatus();
-		String newpass = passwEncrypt.encryptPass(changePassword.getOldPassword());
-		if(isLogin==false)
-		{
-			throw new UserNotLoginException("User Not login this time");
-		}
-		else {
-			if(newpass.equals(dbPass)) {
-				user2.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
-				userRepository.save(user2);
-				LOGGER.debug("change password() completed ");
+		if (!findById.isEmpty()) {
+			User loginUser = userRepository.findById(userName).get();
+			String dbPass = loginUser.getPassword();
+			String userName2 = findById.get().getUserName();
+			Boolean isLogin = findById.get().getLoginStatus();
+			String oldPass = passwEncrypt.encryptPass(changePassword.getOldPassword());
+			if (userName2 != null && isLogin != false) {
+				if (oldPass.equals(dbPass)) {
+					loginUser.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
+					userRepository.save(loginUser);
+					LOGGER.debug("change password() completed ");
+				} else {
+
+					LOGGER.debug("change password username not found in db");
+					throw new UserPasswordDoesNotMatching("User password does not matching");
+				}
+			} else {
+				throw new UserNotLoginException("User Not login this time");
 			}
-			else {
-				throw new UserPasswordDoesNotMatching("User password does not matching");
-			}
+		} else {
+			throw new UserNotLoginExceptions("User Not login this time");
 		}
+
 		return "Password Changed successfully";
+
 	}
 }

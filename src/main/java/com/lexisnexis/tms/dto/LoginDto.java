@@ -2,10 +2,14 @@ package com.lexisnexis.tms.dto;
 
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotBlank;
+
 @Component
 public class LoginDto {
 
+	@NotBlank
 	private String userName;
+	@NotBlank
 	private String password;
 
 	public String getUserName() {

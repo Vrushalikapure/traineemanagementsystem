@@ -1,9 +1,8 @@
 package com.lexisnexis.tms.exception;
 
-@SuppressWarnings("serial")
-public class UserNotFoundException extends Exception{
+public class UserNotFoundException extends Throwable {
 
-    public UserNotFoundException(String message) {
-        super(message);
+    public UserNotFoundException(String msg){
+        super();
     }
 }
