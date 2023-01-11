@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
 
 	public WorkHistory updateWorkHistory(@RequestBody WorkHistory workHistory)
 			throws UserNotLoginException, UserNotFoundException {
-
 		UserLogin user = loginRepository.findByUserName(workHistory.getUserName());
 		System.out.println(user);
 		if (user != null) {
@@ -78,7 +77,6 @@ public class UserServiceImpl implements UserService {
 				throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
 			}
 		}
-
 
 	@Override
 	public List<User> fetchAllUserDetail() throws UserNotFoundException {

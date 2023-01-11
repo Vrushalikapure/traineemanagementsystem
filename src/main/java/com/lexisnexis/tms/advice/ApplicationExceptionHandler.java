@@ -24,7 +24,6 @@ public class ApplicationExceptionHandler {
         });
         return errorMap;
     }
-
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserNotFoundException.class)
     public Map<String, String> handleBusinessException(UserNotFoundException ex) {
@@ -48,7 +47,6 @@ public class ApplicationExceptionHandler {
         map.put("error",useraccount.getMessage());
         return map;
     }
-
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserNotLoginException.class)
     public Map<String, String> userNotLogin(UserNotLoginException ex) {
@@ -56,5 +54,4 @@ public class ApplicationExceptionHandler {
         errorMap.put("errorMessage", ex.getMessage());
         return errorMap;
     }
-
 }

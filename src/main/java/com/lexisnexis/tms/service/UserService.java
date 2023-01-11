@@ -37,7 +37,7 @@ public interface UserService {
     public String changePassword(String userName, ChangePassword changePassword)
             throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching;
 
-    WorkHistory updateWorkHistory(WorkHistory workHistory)throws UserNotLoginException, UserNotFoundException;
+    WorkHistory updateWorkHistory(WorkHistory workHistory )throws UserNotLoginException, UserNotFoundException;
 
     //void updateWorkHistory(WorkHistory workHistory);
 }

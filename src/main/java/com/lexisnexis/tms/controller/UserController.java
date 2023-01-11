@@ -68,7 +68,6 @@ public class UserController {
 	@PostMapping("/workHistory")
 	public String saveWorkHistory(@RequestBody WorkHistory workHistory)
 			throws UserNotLoginException, UserNotFoundException{
-
 		userService.updateWorkHistory(workHistory);
 		return "work history updated";
 
