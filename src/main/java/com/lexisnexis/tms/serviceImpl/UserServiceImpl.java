@@ -1,14 +1,12 @@
 package com.lexisnexis.tms.serviceImpl;
-
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.*;
 import com.lexisnexis.tms.repository.LoginRepository;
-import com.lexisnexis.tms.service.UserService;
+import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,10 +16,8 @@ import org.springframework.stereotype.Service;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
@@ -113,14 +109,6 @@ public class UserServiceImpl implements UserService {
 		{
 			throw new UserNotFoundException("user has not register");
 		}
-	}
-
-	@Override
-	public UserLogin loginUser(@RequestBody User emp,
-							   @RequestBody UserLogin userlogin) throws UserNotFoundException {
-		User user=userRepository.findByUserName(userlogin.getUserName());
-		userlogin.setUserName(emp.getUserName());
-		return loginRepository.save(userlogin);
 	}
 
 	@Override

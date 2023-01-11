@@ -12,22 +12,20 @@ import com.lexisnexis.tms.exception.UserNotLoginException;
 import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 import com.lexisnexis.tms.repository.LoginRepository;
+import com.lexisnexis.tms.serviceImpl.UserPdfExporterImpl;
+import com.lexisnexis.tms.services.LoginService;
+import com.lexisnexis.tms.services.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.lexisnexis.tms.dto.LoginDto;
 import com.lexisnexis.tms.entity.User;
-import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
 import com.lexisnexis.tms.exception.UserNotFoundException;
-import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.response.APIResponse;
-import com.lexisnexis.tms.service.LoginService;
-import com.lexisnexis.tms.service.PdfService;
-import com.lexisnexis.tms.service.UserPdfExporter;
-import com.lexisnexis.tms.service.UserService;
+import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import com.lowagie.text.DocumentException;
 
@@ -75,25 +73,24 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<APIResponse> login(@RequestBody @Valid LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
+	public ResponseEntity<APIResponse> login(@RequestBody LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
 		APIResponse apiResponse= loginService.login(loginDto);
 		return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 	}
 
 	@GetMapping("/users/report")
-	public void createPdf(HttpServletResponse response) throws DocumentException, IOException {
+	public void createpdf(HttpServletResponse response) throws DocumentException, IOException {
 
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 		String currentDateTime = dateFormatter.format(new Date());
 
 		String headerKey = "Content-Disposition";
-
 		String headerValue = "attachment; filename=logWork_" + currentDateTime + ".pdf";
 
 		response.setHeader(headerKey, headerValue);
 		List<WorkHistory> l = pdfService.getAll();
-		UserPdfExporter userPdfExporter = new UserPdfExporter(l);
+		UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(l);
 		userPdfExporter.export(response);
 	}
 

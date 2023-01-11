@@ -1,4 +1,4 @@
-package com.lexisnexis.tms.service;
+package com.lexisnexis.tms.services;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -22,8 +22,8 @@ public interface UserService {
 
     public void deleteDataByUserName(String userName) throws UserNotFoundException;
 
-    public UserLogin loginUser(@RequestBody User user,@RequestBody UserLogin userlogin)
-            throws UserNotFoundException;
+//    public UserLogin loginUser(@RequestBody User user,@RequestBody UserLogin userlogin)
+//            throws UserNotFoundException;
 
     public String updateUser(User user);
 
@@ -33,6 +33,4 @@ public interface UserService {
             throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching, UserNotFoundException,  UserNotLoginExceptions;
 
     WorkHistory updateWorkHistory(WorkHistory workHistory )throws UserNotLoginException, UserNotFoundException;
-
-    //void updateWorkHistory(WorkHistory workHistory);
 }

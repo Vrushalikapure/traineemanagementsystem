@@ -43,9 +43,9 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserAlreadyHasAccount.class)
-    public Map<String,String> EmployeeAlreadyHaveAccount(UserAlreadyHasAccount useraccount){
+    public Map<String,String> EmployeeAlreadyHaveAccount(UserAlreadyHasAccount userAccount){
         HashMap<String,String> map=new HashMap<String, String>();
-        map.put("error",useraccount.getMessage());
+        map.put("error",userAccount.getMessage());
         return map;
     }
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
