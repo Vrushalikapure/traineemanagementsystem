@@ -1,0 +1,1 @@
+insert into user_details(user_name, first_name, last_name, mobile_no, email, location, password, created_timestamp, last_updated_timestamp) values ('admin', 'user', 'name', '12345', 'user@email.com', 'mumbai', 'password', '2022-04-01', '2023-01-01');
