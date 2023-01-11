@@ -1,4 +1,4 @@
-package com.lexisnexis.tms.exception;
+package com.lexisnexis.tms.advice;
 
 //import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.lexisnexis.tms.exception.UserAppError;
+import com.lexisnexis.tms.exception.UserNameAlreadyExistException;
+import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +40,7 @@ public class UserAppHandlerException {
         LOGGER.debug("tms UserAppHandlerException class handelUserNameNotExistException() ended");
         return new ResponseEntity<UserAppError>(userAppError, HttpStatus.BAD_REQUEST);
     }
+    
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public Map<String,String> handleValidationException(MethodArgumentNotValidException exception){
         LOGGER.debug("tms UserAppHandlerException class handleValidationException() started");
@@ -46,10 +53,12 @@ public class UserAppHandlerException {
     }
 
     @ExceptionHandler(value = UserNotLoginException.class)
-    public ResponseEntity<String> handelUserNotLoginException(
+    public ResponseEntity<UserAppError> handelUserNotLoginException(
             UserNotLoginException loginException) {
+    	
         LOGGER.debug("tms UserNotLoginException class");
-        return new ResponseEntity<String>("UserName doesn't matching with database", HttpStatus.BAD_REQUEST);
+        UserAppError userAppError = new UserAppError(404, "UserName doesn't Exist with database", new Date());
+        return new ResponseEntity<UserAppError>(userAppError, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(value = UserPasswordDoesNotMatching.class)

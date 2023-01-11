@@ -3,16 +3,15 @@ package com.lexisnexis.tms.service;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.exception.UserAlreadyHasAccount;
 import com.lexisnexis.tms.exception.UserNotFoundException;
 import com.lexisnexis.tms.exception.UserNotLoginException;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface UserService {
 
