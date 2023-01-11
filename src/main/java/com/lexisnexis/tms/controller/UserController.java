@@ -66,28 +66,22 @@ public class UserController {
 	}
 
 	@PostMapping("/workHistory")
-	public String saveWorkHistory(@RequestBody WorkHistory workHistory) {
+	public String saveWorkHistory(@RequestBody WorkHistory workHistory)
+			throws UserNotLoginException, UserNotFoundException{
 
 		userService.updateWorkHistory(workHistory);
 		return "work history updated";
 
 	}
 
-	@GetMapping("/getAllUsers")
-	public List<User> getAllUsers() {
-		return userRepository.findAll();
-	}
-
 	@PostMapping("/login")
 	public ResponseEntity<APIResponse> login(@RequestBody LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
 		APIResponse apiResponse= loginService.login(loginDto);
-
-
 		return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 	}
 
 	@GetMapping("/users/report")
-	public void createpdf(HttpServletResponse response) throws DocumentException, IOException {
+	public void createPdf(HttpServletResponse response) throws DocumentException, IOException {
 
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -135,7 +129,6 @@ public class UserController {
 	@PostMapping("/changePassword/{userName}")
 	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody ChangePassword changePassword)
 			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching {
-		//String userName="priyanka8";
 		String password = userService.changePassword(userName,changePassword);
 		return new ResponseEntity<String>(password, HttpStatus.OK);
 	}

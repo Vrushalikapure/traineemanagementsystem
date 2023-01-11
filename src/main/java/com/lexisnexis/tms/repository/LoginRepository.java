@@ -7,10 +7,4 @@ import com.lexisnexis.tms.entity.UserLogin;
 public interface LoginRepository extends JpaRepository<UserLogin, String>
 {
     UserLogin findByUserName(String userName);
-
-   // void deleteById(String userName);
-
-    void deleteByUserName(String userName);
-
-    //void deleteById(String userName);
 }

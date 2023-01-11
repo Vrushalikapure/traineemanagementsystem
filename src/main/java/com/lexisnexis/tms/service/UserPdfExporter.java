@@ -30,16 +30,16 @@ public class UserPdfExporter {
 		PdfPCell cell = new PdfPCell();
 		 cell.setPhrase(new Phrase("userName"));
 		 ptable.addCell(cell);
-		 cell.setPhrase(new Phrase("firstName"));
+		 cell.setPhrase(new Phrase("working Area"));
 		 ptable.addCell(cell);
-		 cell.setPhrase(new Phrase("lastName"));
+		 cell.setPhrase(new Phrase("Comments"));
 		 ptable.addCell(cell);
-		 cell.setPhrase(new Phrase("mobileNo"));
-		 ptable.addCell(cell);
-		 cell.setPhrase(new Phrase("email"));
-		 ptable.addCell(cell);
-		 cell.setPhrase(new Phrase("location"));
-		 ptable.addCell(cell);	 
+//		 cell.setPhrase(new Phrase("mobileNo"));
+//		 ptable.addCell(cell);
+//		 cell.setPhrase(new Phrase("email"));
+//		 ptable.addCell(cell);
+//		 cell.setPhrase(new Phrase("location"));
+//		 ptable.addCell(cell);
 	}
 
 	public void writeData(PdfPTable ptable) {
@@ -61,7 +61,7 @@ public class UserPdfExporter {
 		PdfWriter.getInstance(document, response.getOutputStream());
 		document.open();
 		document.add(new Paragraph ("list of users"));
-		PdfPTable ptable =new PdfPTable(6);
+		PdfPTable ptable =new PdfPTable(3);
 		ptable.setWidthPercentage(100);
 		writeHeader(ptable);
 		writeData(ptable);

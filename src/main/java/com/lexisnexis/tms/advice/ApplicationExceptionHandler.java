@@ -3,6 +3,7 @@ package com.lexisnexis.tms.advice;
 import com.lexisnexis.tms.exception.BlogAPIException;
 import com.lexisnexis.tms.exception.UserAlreadyHasAccount;
 import com.lexisnexis.tms.exception.UserNotFoundException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,11 +49,12 @@ public class ApplicationExceptionHandler {
         return map;
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public Map<String,String> handleBussinessException(UserNotFoundException error){
-//        HashMap<String,String> map=new HashMap<>();
-//        map.put("error", error.getMessage());
-//        return map;
-//    }
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(UserNotLoginException.class)
+    public Map<String, String> userNotLogin(UserNotLoginException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("errorMessage", ex.getMessage());
+        return errorMap;
+    }
+
 }

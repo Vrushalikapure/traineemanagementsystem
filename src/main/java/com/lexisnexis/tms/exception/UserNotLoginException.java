@@ -4,7 +4,7 @@ package com.lexisnexis.tms.exception;
 public class UserNotLoginException extends Exception {
 
     public UserNotLoginException(String msg) {
-        super();
+        super(msg);
     }
 
 }

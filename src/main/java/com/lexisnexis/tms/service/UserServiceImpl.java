@@ -54,15 +54,31 @@ public class UserServiceImpl implements UserService {
 		return "User registered successfully!.";
 	}
 
-	public WorkHistory updateWorkHistory(WorkHistory workHistory) {
+//	@Override
+//	public WorkHistory updateWorkHistory(WorkHistory workHistory) throws UserNotLoginException, UserNotFoundException {
+//		return null;
+//	}
 
-		UserLogin loginTable1 = loginRepository.findByUserName(workHistory.getUserName());
-		LocalDateTime loginTime = loginTable1.getLoginTime();
+	public WorkHistory updateWorkHistory(@RequestBody WorkHistory workHistory)
+			throws UserNotLoginException, UserNotFoundException {
 
-		workHistory.setCreatedTimestamp(loginTime);
-		WorkHistory work = workHistoryRepository.save(workHistory);
-		return work;
-	}
+		UserLogin user = loginRepository.findByUserName(workHistory.getUserName());
+		System.out.println(user);
+		if (user != null) {
+			System.out.println(user.getLoginStatus() );
+			if (user.getLoginStatus() == false) {
+				throw new UserNotLoginException("Please Login!!!");
+			} else {
+				LocalDateTime loginTime = user.getLoginTime();
+				workHistory.setLoginAt(loginTime);
+				WorkHistory work = workHistoryRepository.save(workHistory);
+				return work;
+			}
+			}else{
+				throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
+			}
+		}
+
 
 	@Override
 	public List<User> fetchAllUserDetail() throws UserNotFoundException {
@@ -73,7 +89,7 @@ public class UserServiceImpl implements UserService {
 		}
 		else
 		{
-			throw new UserNotFoundException("We Dont Have Any employee yet");
+			throw new UserNotFoundException("We Don't Have Any user yet");
 		}
 	}
 
@@ -117,20 +133,6 @@ public class UserServiceImpl implements UserService {
 
 
 	}
-
-//	@Override
-//	public User updateUser(@PathVariable String userName, @RequestBody User user) throws UserNotFoundException, NoSuchAlgorithmException{
-//		User user1 = userRepository.findByUserName(userName);
-//
-//		if(user1!=null) {
-//			user.setPassword(passwEncrypt.encryptPass(user.getPassword()));
-//			return	userRepository.save(user);
-//		}
-//		else
-//		{
-//			throw new UserNotFoundException("UsrName name does not Exist"+" "+userName+" "+"So you can't Update.");
-//		}
-//	}
 
 	@Override
 	public UserLogin loginUser(@RequestBody User emp,

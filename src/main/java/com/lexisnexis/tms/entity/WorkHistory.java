@@ -4,7 +4,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -19,6 +18,8 @@ public class WorkHistory {
     private String workingArea;
     @Column(name = "comments")
     private String comments;
+    @Column(name = "login_at")
+    private LocalDateTime loginAt;
     @Column(name="createdTimestamp")
     @CreationTimestamp
     private LocalDateTime createdTimestamp;
@@ -49,6 +50,14 @@ public class WorkHistory {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public LocalDateTime getLoginAt() {
+        return loginAt;
+    }
+
+    public void setLoginAt(LocalDateTime loginAt) {
+        this.loginAt = loginAt;
     }
 
     public LocalDateTime getCreatedTimestamp() {
