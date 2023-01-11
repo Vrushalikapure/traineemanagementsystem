@@ -135,7 +135,6 @@ public class UserController {
 	@PostMapping("/changePassword/{userName}")
 	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody ChangePassword changePassword)
 			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching {
-		//String userName="priyanka8";
 		String password = userService.changePassword(userName,changePassword);
 		return new ResponseEntity<String>(password, HttpStatus.OK);
 	}

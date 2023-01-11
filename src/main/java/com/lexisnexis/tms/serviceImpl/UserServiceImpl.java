@@ -1,28 +1,31 @@
-package com.lexisnexis.tms.service;
+package com.lexisnexis.tms.serviceImpl;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.lexisnexis.tms.dto.ChangePassword;
-import com.lexisnexis.tms.exception.*;
-import com.lexisnexis.tms.repository.LoginRepository;
-import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import com.lexisnexis.tms.entity.UserLogin;
+import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.entity.User;
+import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
+import com.lexisnexis.tms.exception.BlogAPIException;
+import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
+import com.lexisnexis.tms.exception.UserNotFoundException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.lexisnexis.tms.service.UserService;
+import com.lexisnexis.tms.util.PasswEncrypt;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,11 +44,9 @@ public class UserServiceImpl implements UserService {
 
 	final private static Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
-
 	@Override
 	public String registerNewUser(User user) throws NoSuchAlgorithmException {
 
-		// add check for username exists in database
 		if (userRepository.existsByUserName(user.getUserName())) {
 			throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
 		} else {
@@ -56,15 +57,8 @@ public class UserServiceImpl implements UserService {
 
 	public WorkHistory updateWorkHistory(WorkHistory workHistory) {
 
-<<<<<<< HEAD
-		UserLogin loginTable = loginTableRepository.findByUserName(workHistory.getUserName());
+		UserLogin loginTable = loginRepository.findByUserName(workHistory.getUserName());
 		LocalDateTime loginTime = loginTable.getLoginTime();
-		LocalDateTime lastUpdate = loginTable.getLastUpdatedTime();
-=======
-		UserLogin loginTable1 = loginRepository.findByUserName(workHistory.getUserName());
-		LocalDateTime loginTime = loginTable1.getLoginTime();
->>>>>>> 6ccfb5b867f943f04487a9e55cab9e4c8f68f196
-
 
 		workHistory.setCreatedTimestamp(loginTime);
 		WorkHistory work = workHistoryRepository.save(workHistory);
@@ -73,13 +67,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> fetchAllUserDetail() throws UserNotFoundException {
-		long count=userRepository.count();
-		if(count!=0)
-		{
-			return  (List<User>)userRepository.findAll();
-		}
-		else
-		{
+		long count = userRepository.count();
+		if (count != 0) {
+			return (List<User>) userRepository.findAll();
+		} else {
 			throw new UserNotFoundException("We Dont Have Any employee yet");
 		}
 	}
@@ -87,63 +78,39 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getDataByUserName(String userName) throws UserNotFoundException {
 
-		User user=userRepository.findByUserName(userName);
+		User user = userRepository.findByUserName(userName);
 
-		if(user!=null)
-		{
+		if (user != null) {
 			return user;
-		}
-		else
-		{
-			throw new UserNotFoundException("Usrname name does not Exist"+" "+userName);
+		} else {
+			throw new UserNotFoundException("Usrname name does not Exist" + " " + userName);
 		}
 	}
 
 	@Override
 	public void deleteDataByUserName(String userName) throws UserNotFoundException {
 
-		User user=userRepository.findByUserName(userName);
+		User user = userRepository.findByUserName(userName);
 
-		UserLogin userLogin=loginRepository.findByUserName(userName);
+		UserLogin userLogin = loginRepository.findByUserName(userName);
 
-		if(user!=null)
-		{
-			if(userLogin!=null && userLogin.getLoginStatus()==true) {
+		if (user != null) {
+			if (userLogin != null && userLogin.getLoginStatus() == true) {
 				userRepository.deleteById(userName);
 				loginRepository.deleteById(userName);
+			} else {
+				throw new UserNotFoundException("Else user Has not loginIn" + " " + userName);
 			}
-			else
-			{
-				throw new UserNotFoundException("Else user Has not loginIn"+" "+userName);
-			}
-		}
-		else
-		{
+		} else {
 			throw new UserNotFoundException("user has not register");
 		}
 
-
 	}
 
-//	@Override
-//	public User updateUser(@PathVariable String userName, @RequestBody User user) throws UserNotFoundException, NoSuchAlgorithmException{
-//		User user1 = userRepository.findByUserName(userName);
-//
-//		if(user1!=null) {
-//			user.setPassword(passwEncrypt.encryptPass(user.getPassword()));
-//			return	userRepository.save(user);
-//		}
-//		else
-//		{
-//			throw new UserNotFoundException("UsrName name does not Exist"+" "+userName+" "+"So you can't Update.");
-//		}
-//	}
-
 	@Override
-	public UserLogin loginUser(@RequestBody User emp,
-							   @RequestBody UserLogin userlogin) throws UserNotFoundException {
+	public UserLogin loginUser(@RequestBody User emp, @RequestBody UserLogin userlogin) throws UserNotFoundException {
 
-		User user=userRepository.findByUserName(userlogin.getUserName());
+		User user = userRepository.findByUserName(userlogin.getUserName());
 		userlogin.setUserName(emp.getUserName());
 		return loginRepository.save(userlogin);
 	}
@@ -182,26 +149,36 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String changePassword(String userName, ChangePassword changePassword)
 			throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching {
-		Optional<UserLogin> findById = loginRepository.findById(userName);
-		User user2 = userRepository.findById(userName).get();
-		String dbPass = user2.getPassword();
-		Boolean isLogin = findById.get().getLoginStatus();
-		String newpass = passwEncrypt.encryptPass(changePassword.getOldPassword());
-		if(isLogin==false)
-		{
-			throw new UserNotLoginException("User Not login this time");
-		}
-		else {
-			if(newpass.equals(dbPass)) {
 
-				user2.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
-				userRepository.save(user2);
-				LOGGER.debug("change password() completed ");
+			Optional<UserLogin> findById = loginRepository.findById(userName);
+			if (!findById.isEmpty()) {
+				User loginUser = userRepository.findById(userName).get();
+				String dbPass = loginUser.getPassword();
+
+				String userName2 = findById.get().getUserName();
+				Boolean isLogin = findById.get().getLoginStatus();
+				String oldPass = passwEncrypt.encryptPass(changePassword.getOldPassword());
+				if (userName2 != null && isLogin != false) {
+					if (oldPass.equals(dbPass)) {
+						loginUser.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
+						userRepository.save(loginUser);
+						LOGGER.debug("change password() completed ");
+					} else {
+
+						LOGGER.debug("change password username not found in db");
+						throw new UserPasswordDoesNotMatching("User password does not matching");
+
+					}
+				} else {
+					throw new UserNotLoginException("User Not login this time");
+				}
+			} else {
+				throw new UserNotLoginException("User Not login this time");
 			}
-			else {
-				throw new UserPasswordDoesNotMatching("User password does not matching");
-			}
+
+			return "Password Changed successfully";
+
 		}
-		return "Password Changed successfully";
-	}
+		
+
 }
