@@ -1,6 +1,7 @@
 package com.lexisnexis.tms.advice;
 
 //import org.apache.logging.log4j.LogManager;
+import com.lexisnexis.tms.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -8,12 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.lexisnexis.tms.exception.UserAppError;
-import com.lexisnexis.tms.exception.UserNameAlreadyExistException;
-import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
-import com.lexisnexis.tms.exception.UserNotLoginException;
-import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -52,13 +47,13 @@ public class UserAppHandlerException {
         return errorMap;
     }
 
-    @ExceptionHandler(value = UserNotLoginException.class)
+    @ExceptionHandler(value = UserNotLoginExceptions.class)
     public ResponseEntity<UserAppError> handelUserNotLoginException(
-            UserNotLoginException loginException) {
+            UserNotLoginExceptions loginException) {
     	
         LOGGER.debug("tms UserNotLoginException class");
         UserAppError userAppError = new UserAppError(404, "UserName doesn't Exist with database", new Date());
-        return new ResponseEntity<UserAppError>(userAppError, HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<UserAppError>(userAppError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = UserPasswordDoesNotMatching.class)

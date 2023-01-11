@@ -1,9 +1,16 @@
 package com.lexisnexis.tms.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 //@Component
 public class ChangePassword {
 
+    @NotBlank(message =  "oldPassword cannot be empty!")
+    @NotNull(message = "oldPassword cannot be empty!")
     private String oldPassword;
+    @NotBlank(message = "newPassword cannot be empty!")
+    @NotNull(message = "newPassword cannot be empty!")
     private String newPassword;
 
 

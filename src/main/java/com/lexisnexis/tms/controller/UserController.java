@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 import com.lexisnexis.tms.repository.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class UserController {
 	}
 
 	@PostMapping("/workHistory")
-	public String saveWorkHistory(@RequestBody WorkHistory workHistory)
+	public String saveWorkHistory(@RequestBody @Valid WorkHistory workHistory)
 			throws UserNotLoginException, UserNotFoundException{
 		userService.updateWorkHistory(workHistory);
 		return "work history updated";
@@ -74,7 +75,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<APIResponse> login(@RequestBody LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
+	public ResponseEntity<APIResponse> login(@RequestBody @Valid LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
 		APIResponse apiResponse= loginService.login(loginDto);
 		return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 	}
@@ -126,8 +127,8 @@ public class UserController {
 	}
 
 	@PostMapping("/changePassword/{userName}")
-	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody ChangePassword changePassword)
-			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching {
+	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody @Valid ChangePassword changePassword)
+			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching, UserNotFoundException, UserNotLoginExceptions {
 		String password = userService.changePassword(userName,changePassword);
 		return new ResponseEntity<String>(password, HttpStatus.OK);
 	}
