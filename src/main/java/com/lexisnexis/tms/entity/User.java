@@ -63,7 +63,6 @@ public class User {
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -71,7 +70,6 @@ public class User {
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -79,7 +77,6 @@ public class User {
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -87,7 +84,6 @@ public class User {
     public String getMobileNo() {
         return mobileNo;
     }
-
     public void setMobileNo(String mobileNo) {
         this.mobileNo = mobileNo;
     }
@@ -95,7 +91,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -103,7 +98,6 @@ public class User {
     public String getLocation() {
         return location;
     }
-
     public void setLocation(String location) {
         this.location = location;
     }
@@ -111,7 +105,6 @@ public class User {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -119,7 +112,6 @@ public class User {
     public LocalDateTime getCreatedTimestamp() {
         return createdTimestamp;
     }
-
     public void setCreatedTimestamp(LocalDateTime createdTimestamp)
     {
         this.createdTimestamp = createdTimestamp;
@@ -128,7 +120,6 @@ public class User {
     public LocalDateTime getLastUpdatedTimestamp() {
         return lastUpdatedTimestamp;
     }
-
     public void setLastUpdatedTimestamp(LocalDateTime lastUpdatedTimestamp)
     {
         this.lastUpdatedTimestamp = lastUpdatedTimestamp;
