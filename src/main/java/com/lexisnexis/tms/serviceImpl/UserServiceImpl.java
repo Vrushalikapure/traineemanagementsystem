@@ -1,4 +1,4 @@
-package com.lexisnexis.tms.service;
+package com.lexisnexis.tms.serviceImpl;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.*;
 import com.lexisnexis.tms.repository.LoginRepository;
+import com.lexisnexis.tms.service.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,11 +41,8 @@ public class UserServiceImpl implements UserService {
 	PasswEncrypt passwEncrypt;
 
 	final private static Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
-
-
 	@Override
 	public String registerNewUser(User user) throws NoSuchAlgorithmException {
-
 		// add check for username exists in database
 		if (userRepository.existsByUserName(user.getUserName())) {
 			throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
@@ -54,18 +52,10 @@ public class UserServiceImpl implements UserService {
 		return "User registered successfully!.";
 	}
 
-//	@Override
-//	public WorkHistory updateWorkHistory(WorkHistory workHistory) throws UserNotLoginException, UserNotFoundException {
-//		return null;
-//	}
-
 	public WorkHistory updateWorkHistory(@RequestBody WorkHistory workHistory)
 			throws UserNotLoginException, UserNotFoundException {
-
 		UserLogin user = loginRepository.findByUserName(workHistory.getUserName());
-		System.out.println(user);
 		if (user != null) {
-			System.out.println(user.getLoginStatus() );
 			if (user.getLoginStatus() == false) {
 				throw new UserNotLoginException("Please Login!!!");
 			} else {
@@ -74,10 +64,10 @@ public class UserServiceImpl implements UserService {
 				WorkHistory work = workHistoryRepository.save(workHistory);
 				return work;
 			}
-			}else{
-				throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
-			}
+		}else{
+			throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
 		}
+	}
 
 
 	@Override
@@ -95,9 +85,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getDataByUserName(String userName) throws UserNotFoundException {
-
 		User user=userRepository.findByUserName(userName);
-
 		if(user!=null)
 		{
 			return user;
@@ -110,11 +98,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteDataByUserName(String userName) throws UserNotFoundException {
-
 		User user=userRepository.findByUserName(userName);
-
 		UserLogin userLogin=loginRepository.findByUserName(userName);
-
 		if(user!=null)
 		{
 			if(userLogin!=null && userLogin.getLoginStatus()==true) {
@@ -130,14 +115,11 @@ public class UserServiceImpl implements UserService {
 		{
 			throw new UserNotFoundException("user has not register");
 		}
-
-
 	}
 
 	@Override
 	public UserLogin loginUser(@RequestBody User emp,
 							   @RequestBody UserLogin userlogin) throws UserNotFoundException {
-
 		User user=userRepository.findByUserName(userlogin.getUserName());
 		userlogin.setUserName(emp.getUserName());
 		return loginRepository.save(userlogin);
@@ -188,7 +170,6 @@ public class UserServiceImpl implements UserService {
 		}
 		else {
 			if(newpass.equals(dbPass)) {
-
 				user2.setPassword(passwEncrypt.encryptPass(changePassword.getNewPassword()));
 				userRepository.save(user2);
 				LOGGER.debug("change password() completed ");
