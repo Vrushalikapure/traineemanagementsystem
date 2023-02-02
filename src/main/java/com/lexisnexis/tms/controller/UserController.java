@@ -16,6 +16,7 @@ import com.lexisnexis.tms.serviceImpl.UserPdfExporterImpl;
 import com.lexisnexis.tms.services.LoginService;
 import com.lexisnexis.tms.services.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,8 @@ public class UserController {
 	@Autowired
 	LoginDto loginDto;
 
+	@Value("${pdf.exporter.async:false}")
+	Boolean async;
 
 	// Register api
 	@PostMapping("/register")
@@ -79,7 +82,7 @@ public class UserController {
 	}
 
 	@GetMapping("/users/report")
-	public void createpdf(HttpServletResponse response) throws DocumentException, IOException {
+	public void createpdf(HttpServletResponse response) throws DocumentException, IOException, UserNotFoundException {
 
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -90,7 +93,7 @@ public class UserController {
 
 		response.setHeader(headerKey, headerValue);
 		List<WorkHistory> l = pdfService.getAll();
-		UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(l);
+		UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(l, userService, async);
 		userPdfExporter.export(response);
 	}
 

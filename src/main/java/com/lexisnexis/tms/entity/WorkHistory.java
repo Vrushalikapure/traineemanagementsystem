@@ -2,8 +2,6 @@ package com.lexisnexis.tms.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -74,5 +72,14 @@ public class WorkHistory {
 
     public void setLastUpdatedTimestamp(LocalDateTime lastUpdatedTimestamp) {
         this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+    }
+
+    public String getFlatFileRow() {
+        return  userName +
+                "," + workingArea +
+                "," + comments +
+                "," + loginAt +
+                "," + createdTimestamp +
+                "," + lastUpdatedTimestamp;
     }
 }

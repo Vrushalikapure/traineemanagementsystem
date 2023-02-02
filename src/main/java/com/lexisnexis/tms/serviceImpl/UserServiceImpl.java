@@ -1,8 +1,8 @@
 package com.lexisnexis.tms.serviceImpl;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.*;
 import com.lexisnexis.tms.repository.LoginRepository;
@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.User;
@@ -88,6 +89,12 @@ public class UserServiceImpl implements UserService {
 		{
 			throw new UserNotFoundException("Usrname name does not Exist"+" "+userName);
 		}
+	}
+
+	@Async
+	@Override
+	public CompletableFuture<User> getUserByUserName(String userName) throws UserNotFoundException{
+		return CompletableFuture.completedFuture(getDataByUserName(userName));
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.lexisnexis.tms.services;
 
+import com.lexisnexis.tms.exception.UserNotFoundException;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -10,8 +11,8 @@ public interface UserPdfExporter {
 
     public void writeHeader(PdfPTable ptable);
 
-    public void writeData(PdfPTable ptable);
+    public void writeData(PdfPTable ptable) throws UserNotFoundException;
 
-    public void export(HttpServletResponse response) throws DocumentException, IOException;
+    public void export(HttpServletResponse response) throws DocumentException, IOException, UserNotFoundException;
 
 }

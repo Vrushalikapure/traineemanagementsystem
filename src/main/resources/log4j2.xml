@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Properties>
+        <Property name="filename">target/rolling1/rolling.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d %p %c{1.} [%t]:>-- %m%n"/>
+            <Filters>
+                <MarkerFilter marker="ASYNC" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info"/>
+            </Filters>
+        </Console>
+
+        <RollingFile name="Rolling" fileName="${filename}"
+                     filePattern="target/rolling1/rolling1.%i.log">
+            <PatternLayout>
+                <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <ThresholdFilter level="trace"/>
+            <SizeBasedTriggeringPolicy size="5000000" />
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Rolling" />
+        </Root>
+    </Loggers>
+
+</Configuration>
