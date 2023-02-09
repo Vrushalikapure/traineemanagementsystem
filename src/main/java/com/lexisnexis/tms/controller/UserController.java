@@ -11,10 +11,9 @@ import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.exception.UserNotLoginException;
 import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
-import com.lexisnexis.tms.repository.LoginRepository;
-import com.lexisnexis.tms.serviceImpl.UserPdfExporterImpl;
 import com.lexisnexis.tms.services.LoginService;
 import com.lexisnexis.tms.services.PdfService;
+import com.lexisnexis.tms.services.UserPdfExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import com.lexisnexis.tms.dto.LoginDto;
 import com.lexisnexis.tms.entity.User;
 import com.lexisnexis.tms.entity.WorkHistory;
 import com.lexisnexis.tms.exception.UserNotFoundException;
-import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.response.APIResponse;
 import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
@@ -37,23 +35,16 @@ public class UserController {
 	UserService userService;
 
 	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
 	PasswEncrypt passwEncrypt;
 
 	@Autowired
 	LoginService loginService;
 
 	@Autowired
-	LoginRepository loginRepository;
-
-	@Autowired
 	PdfService pdfService;
 
 	@Autowired
-	LoginDto loginDto;
-
+	UserPdfExporter userPdfExporter;
 
 	// Register api
 	@PostMapping("/register")
@@ -79,7 +70,7 @@ public class UserController {
 	}
 
 	@GetMapping("/users/report")
-	public void createpdf(HttpServletResponse response) throws DocumentException, IOException {
+	public void createpdf(HttpServletResponse response) throws DocumentException, IOException, UserNotFoundException {
 
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -90,8 +81,7 @@ public class UserController {
 
 		response.setHeader(headerKey, headerValue);
 		List<WorkHistory> l = pdfService.getAll();
-		UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(l);
-		userPdfExporter.export(response);
+		userPdfExporter.export(response, l);
 	}
 
 	@GetMapping("/getAllUserDetails")

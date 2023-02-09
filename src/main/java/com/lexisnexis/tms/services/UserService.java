@@ -2,11 +2,11 @@ package com.lexisnexis.tms.services;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.lexisnexis.tms.exception.UserNotLoginExceptions;
-import org.springframework.web.bind.annotation.RequestBody;
 import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.entity.User;
-import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
 import com.lexisnexis.tms.exception.UserNotFoundException;
 import com.lexisnexis.tms.exception.UserNotLoginException;
@@ -21,6 +21,8 @@ public interface UserService {
     public User getDataByUserName(String userName) throws UserNotFoundException;
 
     public void deleteDataByUserName(String userName) throws UserNotFoundException;
+
+    public CompletableFuture<User> getUserByUserName(String userName) throws UserNotFoundException;
 
 //    public UserLogin loginUser(@RequestBody User user,@RequestBody UserLogin userlogin)
 //            throws UserNotFoundException;
