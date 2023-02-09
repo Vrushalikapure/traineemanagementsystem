@@ -1,0 +1,9 @@
+#spring:
+#  application:
+#    name: traineemanagementsystem
+#  cloud:
+#    vault:
+#      host: localhost
+#      port: 8200
+#      scheme: http
+#      token: hvs.tLCeUkM58CmdcnExjC845TuN

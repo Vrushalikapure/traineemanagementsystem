@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="M2Eclipse PMD RuleSet"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+   <description>M2Eclipse PMD RuleSet</description>
+   <exclude-pattern>.*C:/Trainee Management System/traineemanagementsystem/src/test/java.*</exclude-pattern>
+   <exclude-pattern>.*C:/Trainee Management System/traineemanagementsystem/target.*</exclude-pattern>
+   <rule ref="category/java/design.xml/ExcessiveClassLength">
+      <properties>
+         <property name="minimum" value="500.0"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/ExcessiveMethodLength">
+      <properties>
+         <property name="minimum" value="35.0"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/ExcessiveParameterList">
+      <properties>
+         <property name="minimum" value="30.0"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/ExcessivePublicCount">
+      <properties>
+         <property name="minimum" value="60.0"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/TooManyFields">
+      <properties>
+         <property name="maxfields" value="30"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/TooManyMethods">
+      <properties>
+         <property name="maxmethods" value="20"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml/ExcessiveImports">
+      <properties>
+         <property name="minimum" value="60.0"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/codestyle.xml/TooManyStaticImports">
+      <properties>
+         <property name="maximumStaticImports" value="30"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
+      <properties>
+         <property name="maximumAsserts" value="20"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/codestyle.xml/LongVariable">
+      <properties>
+         <property name="minimum" value="50"/>
+      </properties>
+   </rule>
+   <rule ref="category/java/design.xml">
+      <exclude name="LawOfDemeter"/>
+      <exclude name="UseUtilityClass"/>
+      <exclude name="DataClass"/>
+      <exclude name="LoosePackageCoupling"/>
+      <exclude name="SignatureDeclareThrowsException"/>
+      <exclude name="AvoidCatchingGenericException"/>
+   </rule>
+   <rule ref="category/java/codestyle.xml">
+      <exclude name="ClassNamingConventions"/>
+      <exclude name="MethodArgumentCouldBeFinal"/>
+      <exclude name="UnnecessaryModifier"/>
+      <exclude name="TooManyStaticImports"/>
+      <exclude name="AtLeastOneConstructor"/>
+      <exclude name="DefaultPackage"/>
+      <exclude name="IdenticalCatchBranches"/>
+      <exclude name="AvoidDollarSigns"/>
+      <exclude name="OnlyOneReturn"/>
+      <exclude name="UseShortArrayInitializer"/>
+      <exclude name="LinguisticNaming"/>
+      <exclude name="CommentDefaultAccessModifier"/>
+      <exclude name="UseDiamondOperator"/>
+      <exclude name="AbstractNaming"/>
+   </rule>
+   <rule ref="category/java/errorprone.xml">
+      <exclude name="NonStaticInitializer"/>
+      <exclude name="BeanMembersShouldSerialize"/>
+      <exclude name="InvalidLogMessageFormat"/>
+      <exclude name="NullAssignment"/>
+      <exclude name="DataflowAnomalyAnalysis"/>
+   </rule>
+   <rule ref="category/java/bestpractices.xml">
+      <exclude name="AccessorMethodGeneration"/>
+      <exclude name="GuardLogStatement"/>
+      <exclude name="ArrayIsStoredDirectly"/>
+      <exclude name="AbstractClassWithoutAbstractMethod"/>
+      <exclude name="MethodReturnsInternalArray"/>
+   </rule>
+   <rule ref="category/java/performance.xml"/>
+   <rule ref="category/java/multithreading.xml"/>
+   <rule ref="category/java/documentation.xml">
+      <exclude name="CommentRequired"/>
+      <exclude name="CommentSize"/>
+      <exclude name="UncommentedEmptyConstructor"/>
+   </rule>
+</ruleset>

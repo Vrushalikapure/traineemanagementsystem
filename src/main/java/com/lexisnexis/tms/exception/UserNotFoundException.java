@@ -1,8 +1,10 @@
 package com.lexisnexis.tms.exception;
 
-public class UserNotFoundException extends Throwable {
+public class UserNotFoundException extends RuntimeException {
 
-    public UserNotFoundException(String msg){
+    static final long serialVersionUID = 1L;
+
+    public UserNotFoundException(String msg) {
         super(msg);
     }
 }

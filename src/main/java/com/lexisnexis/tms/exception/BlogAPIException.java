@@ -2,12 +2,15 @@ package com.lexisnexis.tms.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BlogAPIException extends RuntimeException{
+public class BlogAPIException extends RuntimeException {
 
-    private HttpStatus status;
-    private String message;
+    static final long serialVersionUID = 1L;
+
+    final private HttpStatus status;
+    final private String message;
 
     public BlogAPIException(HttpStatus status, String message) {
+        super(message);
         this.status = status;
         this.message = message;
     }

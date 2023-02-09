@@ -1,4 +1,4 @@
-package com.lexisnexis.tms.serviceImpl;
+package com.lexisnexis.tms.serviceimpl;
 
 import com.lexisnexis.tms.entity.WorkHistory;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
@@ -12,7 +12,9 @@ import java.util.List;
 public class PdfServiceImpl implements PdfService {
     @Autowired
     WorkHistoryRepository workHistoryRepository;
-    public List<WorkHistory> getAll(){
+
+    @Override
+    public List<WorkHistory> getAll() {
         return workHistoryRepository.findAll();
     }
 }

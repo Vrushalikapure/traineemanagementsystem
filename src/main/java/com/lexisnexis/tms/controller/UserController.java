@@ -1,132 +1,152 @@
 package com.lexisnexis.tms.controller;
+
+import com.lexisnexis.tms.dto.ChangePassword;
+import com.lexisnexis.tms.dto.LoginDto;
+import com.lexisnexis.tms.entity.UserEntity;
+import com.lexisnexis.tms.entity.WorkHistory;
+import com.lexisnexis.tms.exception.UserNotFoundException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserNotLoginExceptions;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
+import com.lexisnexis.tms.response.APIResponse;
+import com.lexisnexis.tms.serviceimpl.UserPdfExporterImpl;
+import com.lexisnexis.tms.services.LoginService;
+import com.lexisnexis.tms.services.PdfService;
+import com.lexisnexis.tms.services.UserService;
+import com.lexisnexis.tms.util.PasswEncrypt;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import com.lexisnexis.tms.dto.ChangePassword;
-import com.lexisnexis.tms.exception.UserNotLoginException;
-import com.lexisnexis.tms.exception.UserNotLoginExceptions;
-import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
-import com.lexisnexis.tms.repository.LoginRepository;
-import com.lexisnexis.tms.serviceImpl.UserPdfExporterImpl;
-import com.lexisnexis.tms.services.LoginService;
-import com.lexisnexis.tms.services.PdfService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.lexisnexis.tms.dto.LoginDto;
-import com.lexisnexis.tms.entity.User;
-import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.exception.UserNotFoundException;
-import com.lexisnexis.tms.repository.UserRepository;
-import com.lexisnexis.tms.response.APIResponse;
-import com.lexisnexis.tms.services.UserService;
-import com.lexisnexis.tms.util.PasswEncrypt;
-import com.lowagie.text.DocumentException;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/tms/api/v1")
 public class UserController {
+//    @Value("${dbusername}")
+//    private String dbusername;
+//    @Value("${dbpassword}")
+//    private String dbpassword;
 
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    PasswEncrypt passwEncrypt;
 
-	@Autowired
-	PasswEncrypt passwEncrypt;
+    @Autowired
+    LoginService loginService;
 
-	@Autowired
-	LoginService loginService;
+    @Autowired
+    PdfService pdfService;
 
-	@Autowired
-	LoginRepository loginRepository;
+    @Autowired
+    private JobLauncher jobLauncher;
 
-	@Autowired
-	PdfService pdfService;
-
-	@Autowired
-	LoginDto loginDto;
+    @Autowired
+    private Job job;
 
 
-	// Register api
-	@PostMapping("/register")
-	public String registerNewUser(@RequestBody @Valid User user) throws NoSuchAlgorithmException {
+    private static Logger logger = LogManager.getLogger();
 
-		user.setPassword(passwEncrypt.encryptPass(user.getPassword()));
-		userService.registerNewUser(user);
-		return "user registration successfully";
-	}
+    @PostMapping("/importUsers")
+    public void importCsvToDBJob() {
+        final JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(job, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException batchException) {
+            logger.info(batchException.getMessage());
+        }
+    }
 
-	@PostMapping("/workHistory")
-	public String saveWorkHistory(@RequestBody @Valid WorkHistory workHistory)
-			throws UserNotLoginException, UserNotFoundException{
-		userService.updateWorkHistory(workHistory);
-		return "work history updated";
 
-	}
+    // Register api
+    @PostMapping("/register")
+    public String registerNewUser(@RequestBody @Valid UserEntity userEntity) throws NoSuchAlgorithmException {
+        userEntity.setPassword(passwEncrypt.encryptPass(userEntity.getPassword()));
+        return userService.registerNewUser(userEntity);
+    }
 
-	@PostMapping("/login")
-	public ResponseEntity<APIResponse> login(@RequestBody LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException{
-		APIResponse apiResponse= loginService.login(loginDto);
-		return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-	}
+    @PostMapping("/workHistory")
+    public String saveWorkHistory(@RequestBody @Valid WorkHistory workHistory)
+            throws UserNotLoginException, UserNotFoundException {
+        userService.updateWorkHistory(workHistory);
+        return "work history updated";
+    }
 
-	@GetMapping("/users/report")
-	public void createpdf(HttpServletResponse response) throws DocumentException, IOException {
+    @PostMapping("/login")
+    public ResponseEntity<APIResponse> login(@RequestBody @Valid LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException {
+        final APIResponse login = loginService.login(loginDto);
+        return ResponseEntity.status(login == null ? HttpStatus.NOT_FOUND : HttpStatus.OK).body(login);
+    }
 
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+    @GetMapping("/users/report")
+    public void createPdf(HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+        final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.ENGLISH);
+        final String currentDateTime = dateFormatter.format(new Date());
+        final String headerKey = "Content-Disposition";
+        final String headerValue = "attachment; filename=logWork_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        final List<WorkHistory> list = pdfService.getAll();
+        final UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(list);
+        userPdfExporter.export(response);
+    }
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=logWork_" + currentDateTime + ".pdf";
+    @GetMapping("/getAllUserDetails")
+    public ResponseEntity<List<UserEntity>> fetchAllEmpDetail() throws UserNotFoundException {
+        return new ResponseEntity<>(this.userService.fetchAllUserDetail(), HttpStatus.ACCEPTED);
+    }
 
-		response.setHeader(headerKey, headerValue);
-		List<WorkHistory> l = pdfService.getAll();
-		UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(l);
-		userPdfExporter.export(response);
-	}
+    @GetMapping("/getDataByUsername/{userName}")
+    public ResponseEntity<UserEntity> getData(@PathVariable @Valid String userName) throws UserNotFoundException {
+        return new ResponseEntity<>(userService.getDataByUserName(userName), HttpStatus.OK);
+    }
 
-	@GetMapping("/getAllUserDetails")
-	public ResponseEntity<List<User>>  fetchAllEmpDetail()throws UserNotFoundException{
-		return new ResponseEntity<>(this.userService.fetchAllUserDetail(),HttpStatus.ACCEPTED);
-	}
+    @DeleteMapping("/deleteDataByUsername/{userName}")
+    public String deleteDataByUserName(@PathVariable @Valid String userName) throws UserNotFoundException {
+        logger.info(Thread.currentThread().getName());
+        userService.deleteDataByUserName(userName);
+        logger.info(Thread.currentThread().getName());
+        return "User removed successfully " + userName;
+    }
 
-	@GetMapping("/getDataByUsername/{userName}")
-	public ResponseEntity<User> getData(@PathVariable String userName) throws UserNotFoundException {
-		return new ResponseEntity<>(userService.getDataByUserName(userName), HttpStatus.OK);
-	}
+    @PostMapping("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestBody @Valid UserEntity userUpdate) {
+        final String updateUser = userService.updateUser(userUpdate);
+        return new ResponseEntity<>(updateUser, HttpStatus.ACCEPTED);
+    }
 
-	@DeleteMapping("/deleteDataByUsername/{userName}")
-	public String deleteDataByUserName(@PathVariable String userName) throws UserNotFoundException
-	{
-		userService.deleteDataByUserName(userName);
-		return "User removed successfully "+userName;
-	}
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<String> forgotPassword(@RequestBody @Valid UserEntity user) throws NoSuchAlgorithmException {
+        final String forgotPassword = userService.forgotPassword(user);
+        return new ResponseEntity<String>(forgotPassword, HttpStatus.OK);
+    }
 
-	@PostMapping(value = "/updateUser")
-	public ResponseEntity<String> updateUser(@RequestBody User userUpdate) {
-		String updateUser = userService.updateUser(userUpdate);
-		return new ResponseEntity<>(updateUser, HttpStatus.ACCEPTED);
-	}
-
-	@PostMapping("/forgotPassword")
-	public ResponseEntity<String> forgotPassword(@RequestBody User user) throws NoSuchAlgorithmException {
-		String forgotPassword = userService.forgotPassword(user);
-		return new ResponseEntity<String>(forgotPassword, HttpStatus.OK);
-	}
-
-	@PostMapping("/changePassword/{userName}")
-	public ResponseEntity<String> changePassword(@PathVariable String userName, @RequestBody @Valid ChangePassword changePassword)
-			throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching, UserNotFoundException, UserNotLoginExceptions {
-		String password = userService.changePassword(userName,changePassword);
-		return new ResponseEntity<String>(password, HttpStatus.OK);
-	}
+    @PostMapping("/changePassword/{userName}")
+    public ResponseEntity<String> changePassword(@PathVariable @Valid String userName, @RequestBody @Valid ChangePassword changePassword)
+            throws NoSuchAlgorithmException, UserNotLoginException, UserPasswordDoesNotMatching, UserNotFoundException, UserNotLoginExceptions {
+        final String password = userService.changePassword(userName, changePassword);
+        return new ResponseEntity<String>(password, HttpStatus.OK);
+    }
 }

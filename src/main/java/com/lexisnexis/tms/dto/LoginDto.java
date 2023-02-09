@@ -7,25 +7,24 @@ import javax.validation.constraints.NotBlank;
 @Component
 public class LoginDto {
 
-	@NotBlank
-	private String userName;
-	@NotBlank
-	private String password;
+    @NotBlank(message = "userName cannot be empty!")
+    private String userName;
+    @NotBlank(message = "password cannot be empty!")
+    private String password;
 
-	public String getUserName() {
-		return userName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
