@@ -108,49 +108,26 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <configuration>
+                    <failOnViolation>true</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+                    <format>html</format>
+                    <rulesets>
+                        <ruleset>maven-pmd-ruleset.xml</ruleset>
+                    </rulesets>
+                    <linkXRef>false</linkXRef>
+                </configuration>
                 <executions>
                     <execution>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>build-info</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-pmd-plugin</artifactId>-->
-<!--                <version>${maven-pmd-plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <failOnViolation>true</failOnViolation>-->
-<!--                    <printFailingErrors>true</printFailingErrors>-->
-<!--                    <format>html</format>-->
-<!--                    <rulesets>-->
-<!--                        <ruleset>maven-pmd-ruleset.xml</ruleset>-->
-<!--                    </rulesets>-->
-<!--                    <linkXRef>false</linkXRef>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>validate</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
          </plugins>
         <resources>
             <resource>

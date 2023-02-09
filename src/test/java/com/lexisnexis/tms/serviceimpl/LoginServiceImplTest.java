@@ -45,8 +45,6 @@
 
 package com.lexisnexis.tms.serviceimpl;
 
-import com.lexisnexis.tms.dto.LoginDto;
-import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
@@ -56,7 +54,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 

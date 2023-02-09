@@ -6,7 +6,7 @@ import com.lexisnexis.tms.util.PasswEncrypt;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class UserBatchProcessor implements ItemProcessor<UserEntity,UserEntity> {
+public class UserBatchProcessor implements ItemProcessor<UserEntity, UserEntity> {
     @Autowired
     PasswEncrypt passwEncrypt;
     @Override

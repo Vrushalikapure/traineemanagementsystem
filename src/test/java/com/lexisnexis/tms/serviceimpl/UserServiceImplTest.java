@@ -42,7 +42,7 @@ public class UserServiceImplTest {
 
     UserNotLoginException userNotLoginException;
 
-    Optional<UserEntity> UserEntity;
+    Optional<com.lexisnexis.tms.entity.UserEntity> UserEntity;
 
     APIResponse apiResponse;
 
@@ -57,7 +57,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getDataByUserNameWhenUserExist() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("neha17");
         when(userRepository.findByUserName("neha17")).thenReturn(user);
         userServiceImpl.getDataByUserName("neha17");
@@ -65,7 +65,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getDataByUserNameWhenUserDoesNotExist() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("abcd");
         when(userRepository.findByUserName("vrushali")).thenReturn(null);
         try {
@@ -76,7 +76,7 @@ public class UserServiceImplTest {
 
     @Test
     public void deleteDataByUserNameValidUser() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam11");
         UserLogin userLogin = new UserLogin();
         userLogin.setUserName("sam11");
@@ -93,7 +93,7 @@ public class UserServiceImplTest {
 
     public void shouldThrowUserNotFoundException() {
         UserRepository userRepository = mock(UserRepository.class);
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("shubham");
         when(userRepository.findByUserName("deepak")).thenReturn(null);
         try {
@@ -106,7 +106,7 @@ public class UserServiceImplTest {
 
 
     public void deleteDataByUserNameWhileUserIsNotLogin() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam11");
         when(userRepository.findByUserName("sam11")).thenReturn(user);
         when(loginRepository.findByUserName("sam11")).thenReturn(null);
@@ -120,7 +120,7 @@ public class UserServiceImplTest {
 
 
     public void updateUserWhenUserExist() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam");
         when(userRepository.existsByUserName("sam")).thenReturn(true);
         userServiceImpl.updateUser(user);
@@ -130,7 +130,7 @@ public class UserServiceImplTest {
 
 
     public void updateUserWhenUserDoesNotExist() {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam");
         when(userRepository.existsByUserName("www")).thenReturn(false);
         try {
@@ -143,7 +143,7 @@ public class UserServiceImplTest {
 
 
     public void registerNewUserIfUserNameDoesNotExist() {
-        UserEntity userEntity = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity userEntity = new UserEntity();
         userEntity.setUserName("vrushali17");
         when(userRepository.existsByUserName("vrushali17")).thenReturn(false);
         userServiceImpl.registerNewUser(userEntity);
@@ -151,7 +151,7 @@ public class UserServiceImplTest {
 
     @Test
     public void registerNewUserIfUserNameExist() {
-        UserEntity userEntity = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity userEntity = new UserEntity();
         userEntity.setUserName("vrushali17");
         when(userRepository.existsByUserName("vrushali17")).thenReturn(true);
         try {
@@ -162,7 +162,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateWorkHistoryIfUserIsLoggedInTest() throws UserNotFoundException, UserNotLoginException {
-        UserEntity userEntity = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity userEntity = new UserEntity();
         userEntity.setUserName("vrushali");
         UserLogin userLogin = new UserLogin();
         userLogin.setUserName("vrushali");
@@ -177,7 +177,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateWorkHistoryIfUserIsNotLoggedInTest() {
-        UserEntity userEntity = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity userEntity = new UserEntity();
         userEntity.setUserName("vrushali");
         UserLogin userLogin = new UserLogin();
         userLogin.setUserName("vrushali");
@@ -195,7 +195,7 @@ public class UserServiceImplTest {
 
     @Test
     public void updateWorkHistoryWhenUserDoesNotExist() throws UserNotLoginException {
-        UserEntity userEntity = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity userEntity = new UserEntity();
         userEntity.setUserName("vrushali");
         UserLogin userLogin = new UserLogin();
         userLogin.setUserName("vrushali");
@@ -228,7 +228,7 @@ public class UserServiceImplTest {
 
     @Test
     public void forgotPasswordInValidUser() throws UserNotFoundException {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam11");
         when(userRepository.findByUserName("sam")).thenReturn(null);
         try {
@@ -239,7 +239,7 @@ public class UserServiceImplTest {
 
     @Test
     public void forgotPasswordValidUser() throws NoSuchAlgorithmException {
-        UserEntity user = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity user = new UserEntity();
         user.setUserName("sam11");
         when(userRepository.findByUserName("sam11")).thenReturn(user);
         userServiceImpl.forgotPassword(user);
@@ -262,7 +262,7 @@ public class UserServiceImplTest {
         UserLogin user = new UserLogin();
         user.setUserName("sam");
         user.setLoginStatus(false);
-        UserEntity usere = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity usere = new UserEntity();
         usere.setPassword("sam");
         ChangePassword changePassword = new ChangePassword();
         changePassword.setNewPassword( "samm");
@@ -280,7 +280,7 @@ public class UserServiceImplTest {
         UserLogin user = new UserLogin();
         user.setUserName("sam");
         user.setLoginStatus(true);
-        UserEntity usere = new UserEntity();
+        com.lexisnexis.tms.entity.UserEntity usere = new UserEntity();
         usere.setPassword("sam");
         ChangePassword changePassword = new ChangePassword();
         changePassword.setNewPassword( "samm");

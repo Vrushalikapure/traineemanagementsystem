@@ -72,7 +72,7 @@ public class UserEntity {
         this.lastUpdatedTimestamp = lastUpdatedTimestamp;
     }
 
-    public  UserEntity() {
+    public UserEntity() {
     }
 
     public String getUserName() {

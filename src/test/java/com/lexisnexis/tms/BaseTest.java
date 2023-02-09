@@ -21,6 +21,8 @@ public interface BaseTest {
     @RegisterExtension
     UserResolver userResolver = new UserResolver();
 
+    UserEntity user = new UserEntity();
+
     @BeforeAll
     @BeforeEach
     default void clearMocks(){

@@ -4,7 +4,12 @@ import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.exception.*;
+import com.lexisnexis.tms.exception.UserNotFoundException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserNotLoginExceptions;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
+import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
+import com.lexisnexis.tms.exception.UserNameAlreadyExistException;
 import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
@@ -13,7 +18,6 @@ import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswEncrypt passwEncrypt;
 
-    private static final Logger LOGGER = LogManager.getLogger(UserPdfExporterImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl(UserRepository userRepository, LoginRepository loginRepository, WorkHistoryRepository workHistoryRepository, PasswEncrypt passwEncrypt) {
         this.userRepository = userRepository;
@@ -51,11 +55,11 @@ public class UserServiceImpl implements UserService {
     public String registerNewUser(UserEntity user) {
         // add check for username exists in database
         if (userRepository.existsByUserName(user.getUserName())) {
-            throw new UserNameAlreadyExistException ();
+            throw new UserNameAlreadyExistException();
         } else {
             userRepository.save(user);
         }
-        return "User registered successfully!.";
+        return "UserEntity registered successfully!.";
     }
 
     @Override
@@ -74,6 +78,12 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserNotFoundException("user not found for userName: " + workHistory.getUserName());
         }
+    }
+
+    @Async
+    @Override
+    public CompletableFuture<UserEntity> getUserByUserName(String userName) throws UserNotFoundException {
+        return CompletableFuture.completedFuture(getDataByUserName(userName));
     }
 
     @Override
@@ -116,13 +126,13 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserNotFoundException("user has not register");
         }
-        LOGGER.info("User Deleted" + Thread.currentThread().getName());
+        LOGGER.info("UserEntity Deleted" + Thread.currentThread().getName());
     }
 
     @Override
     public String updateUser(UserEntity user) throws UserNotFoundException {
         final Boolean existsByUserName = userRepository.existsByUserName(user.getUserName());
-        if (existsByUserName == true) {
+        if (existsByUserName) {
             final UserEntity newUser = new UserEntity();
             newUser.setFirstName(user.getFirstName());
             newUser.setLastName(user.getLastName());
@@ -130,10 +140,10 @@ public class UserServiceImpl implements UserService {
             newUser.setLocation(user.getLocation());
             newUser.setMobileNo(user.getMobileNo());
             userRepository.save(newUser);
-            LOGGER.debug("User data updated successfully!");
-            return "User Data updated successfully";
+            LOGGER.debug("UserEntity data updated successfully!");
+            return "UserEntity Data updated successfully";
         } else {
-            throw new UserNotFoundException("User Not Found");
+            throw new UserNotFoundException("UserEntity Not Found");
         }
     }
 
@@ -152,23 +162,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-
-
     public String changePassword(String userName, ChangePassword changePassword)
             throws UserNotLoginException, NoSuchAlgorithmException, UserPasswordDoesNotMatching,
             UserNotLoginExceptions {
-        UserLogin findByUserName = loginRepository.findByUserName(userName);
-        if (findByUserName != null) {
-            UserEntity user = userRepository.findByUserName(userName);
-            String dbPass = user.getPassword();
-            String oldPass = changePassword.getOldPassword();
-            if (dbPass.equals(oldPass) && findByUserName.getLoginStatus() == true) {
+        final UserLogin findByUserName = loginRepository.findByUserName(userName);
+        final boolean userFound = loginRepository.findByUserName(userName) != null;
+        if (userFound) {
+            final UserEntity user = userRepository.findByUserName(userName);
+            final String dbPass = user.getPassword();
+            final String oldPass = changePassword.getOldPassword();
+            if (dbPass.equals(oldPass) && findByUserName.getLoginStatus()) {
                 user.setPassword(changePassword.getNewPassword());
             } else {
-                throw new UserNotLoginException("User Not login this time");
+                throw new UserNotLoginException("UserEntity Not login this time");
             }
         } else {
-            throw new UserNotLoginExceptions("User NotFound");
+            throw new UserNotLoginExceptions("UserEntity NotFound");
         }
         return "Password Changed successfully";
     }
@@ -193,13 +202,13 @@ public class UserServiceImpl implements UserService {
 //                } else {
 //
 //                    LOGGER.debug("change password username not found in db");
-//                    throw new UserPasswordDoesNotMatching("User password does not matching");
+//                    throw new UserPasswordDoesNotMatching("UserEntity password does not matching");
 //                }
 //            } else {
-//                throw new UserNotLoginException("User Not login this time");
+//                throw new UserNotLoginException("UserEntity Not login this time");
 //            }
 //        } else {
-//            throw new UserNotLoginExceptions("User Not login this time");
+//            throw new UserNotLoginExceptions("UserEntity Not login this time");
 //        }
 //        return "Password Changed successfully";
 //    }

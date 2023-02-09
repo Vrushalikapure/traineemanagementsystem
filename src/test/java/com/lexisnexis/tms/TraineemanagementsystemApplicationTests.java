@@ -1,17 +1,6 @@
 package com.lexisnexis.tms;
 
-import com.lexisnexis.tms.dto.LoginDto;
-import com.lexisnexis.tms.entity.UserEntity;
-import com.lexisnexis.tms.repository.UserRepository;
-import com.lexisnexis.tms.serviceimpl.LoginServiceImpl;
-import com.lexisnexis.tms.serviceimpl.UserServiceImpl;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @SpringBootTest
 class TraineemanagementsystemApplicationTests {

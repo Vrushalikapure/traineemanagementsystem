@@ -9,9 +9,9 @@ import com.lexisnexis.tms.exception.UserNotLoginException;
 import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 import com.lexisnexis.tms.response.APIResponse;
-import com.lexisnexis.tms.serviceimpl.UserPdfExporterImpl;
 import com.lexisnexis.tms.services.LoginService;
 import com.lexisnexis.tms.services.PdfService;
+import com.lexisnexis.tms.services.UserPdfExporter;
 import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
@@ -63,6 +63,9 @@ public class UserController {
     private JobLauncher jobLauncher;
 
     @Autowired
+    UserPdfExporter userPdfExporter;
+
+    @Autowired
     private Job job;
 
 
@@ -101,7 +104,7 @@ public class UserController {
     }
 
     @GetMapping("/users/report")
-    public void createPdf(HttpServletResponse response) throws IOException {
+    public void createpdf(HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.ENGLISH);
         final String currentDateTime = dateFormatter.format(new Date());
@@ -109,8 +112,7 @@ public class UserController {
         final String headerValue = "attachment; filename=logWork_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
         final List<WorkHistory> list = pdfService.getAll();
-        final UserPdfExporterImpl userPdfExporter = new UserPdfExporterImpl(list);
-        userPdfExporter.export(response);
+        userPdfExporter.export(response, list);
     }
 
     @GetMapping("/getAllUserDetails")
@@ -128,7 +130,7 @@ public class UserController {
         logger.info(Thread.currentThread().getName());
         userService.deleteDataByUserName(userName);
         logger.info(Thread.currentThread().getName());
-        return "User removed successfully " + userName;
+        return "UserEntity removed successfully " + userName;
     }
 
     @PostMapping("/updateUser")

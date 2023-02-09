@@ -10,6 +10,7 @@ import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
 
@@ -30,4 +31,5 @@ public interface UserService {
 
     WorkHistory updateWorkHistory(WorkHistory workHistory) throws UserNotLoginException, UserNotFoundException;
 
+    public CompletableFuture<UserEntity> getUserByUserName(String userName) throws UserNotFoundException;
 }

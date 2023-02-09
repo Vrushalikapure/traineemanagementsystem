@@ -46,13 +46,13 @@ public class LoginServiceImpl implements LoginService {
         final boolean userLogin1 = user1 != null || !userIsLocked;
         final boolean failedAttempt= user1 != null && !user1.getPassword().equals(password);
         if (user1 == null) {
-            apiResponse.setData("User not exists please Register");
+            apiResponse.setData("UserEntity not exists please Register");
             return apiResponse;
         } else if (failedAttempt) {
             return failureAttempt(loginDto);
         } else if (userLogin1) {
-            LOGGER.info("User logged in");
-            apiResponse.setData("User logged in");
+            LOGGER.info("UserEntity logged in");
+            apiResponse.setData("UserEntity logged in");
             username = user1.getUserName();
             userLogin.setIsLocked(Boolean.FALSE);
             userLogin.setUserName(loginDto.getUserName());
@@ -78,12 +78,12 @@ public class LoginServiceImpl implements LoginService {
         if (userLogin.getLockTime() == null && userLogin.getFailureAttempts() == 4) {
             userLogin.setIsLocked(Boolean.TRUE);
             userLogin.setLockTime(new Date());
-            LOGGER.info("User Locked wait for 5 minutes");
-            apiResponse1.setData("User Locked wait for 5 minutes");
+            LOGGER.info("UserEntity Locked wait for 5 minutes");
+            apiResponse1.setData("UserEntity Locked wait for 5 minutes");
             return apiResponse1;
         }
-        apiResponse1.setData("User login failed");
-        LOGGER.info("User login failed");
+        apiResponse1.setData("UserEntity login failed");
+        LOGGER.info("UserEntity login failed");
         userLogin.setUserName(loginDto.getUserName());
         userLogin.setLoginStatus(Boolean.FALSE);
         userLogin.onSave();
