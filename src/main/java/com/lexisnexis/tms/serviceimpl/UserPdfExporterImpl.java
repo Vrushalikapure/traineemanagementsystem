@@ -44,7 +44,7 @@ public class UserPdfExporterImpl implements UserPdfExporter {
     }
 
     @Override
-    public void export(HttpServletResponse response, ) throws IOException {
+    public void export(HttpServletResponse response ) throws IOException {
         try (Document document=new Document(PageSize.A4)){
             PdfWriter.getInstance(document, response.getOutputStream());
             document.open();

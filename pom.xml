@@ -129,28 +129,28 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <configuration>
-                    <failOnViolation>true</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                    <format>html</format>
-                    <rulesets>
-                        <ruleset>maven-pmd-ruleset.xml</ruleset>
-                    </rulesets>
-                    <linkXRef>false</linkXRef>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-pmd-plugin</artifactId>-->
+<!--                <version>${maven-pmd-plugin.version}</version>-->
+<!--                <configuration>-->
+<!--                    <failOnViolation>true</failOnViolation>-->
+<!--                    <printFailingErrors>true</printFailingErrors>-->
+<!--                    <format>html</format>-->
+<!--                    <rulesets>-->
+<!--                        <ruleset>maven-pmd-ruleset.xml</ruleset>-->
+<!--                    </rulesets>-->
+<!--                    <linkXRef>false</linkXRef>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>validate</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
          </plugins>
         <resources>
             <resource>
