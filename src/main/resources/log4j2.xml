@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                    [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </pattern>>
+            </PatternLayout>
+        </Console>
+        <RollingRandomAccessFile name="Rolling-Random-Access-File-Appender"
+                                 fileName="C:/SpringBootLogs/TMS/logs/rollingrandomaccessfile.log"
+                                 filePattern="C:/SpringBootLogs/TMS/archive/logs/rollingrandomaccessfile.log.%d{yyyy-MM-dd-hh-mm}.gz">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1000000 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="3000000"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger  name="com.lexisnexis.tms" level="debug">
+            <AppenderRef ref="Rolling-Random-Access-File-Appender"/>
+        </AsyncLogger>
+        <Root level="info">
+            <AppenderRef ref="Console-Appender"/>
+        </Root>
+    </Loggers>
+</Configuration>

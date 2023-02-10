@@ -1,12 +1,13 @@
 package com.lexisnexis.tms.repository;
 
-import com.lexisnexis.tms.entity.User;
+import com.lexisnexis.tms.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface UserRepository extends JpaRepository<User, String>
-{
+public interface UserRepository extends JpaRepository<UserEntity, String> {
     Boolean existsByUserName(String userName);
-    User findByUserName(String userName);
-    public User findByPassword(String password);
+
+    UserEntity findByUserName(String userName);
+
+    public UserEntity findByPassword(String password);
 }

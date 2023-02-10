@@ -7,5 +7,4 @@ import java.security.NoSuchAlgorithmException;
 
 public interface LoginService {
     public APIResponse login(LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException;
-
 }

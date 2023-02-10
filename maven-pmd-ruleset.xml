@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Ruleset"
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0.xsd">
+
+	<description>This ruleset validates batch-common quality of coding</description>
+
+	<!-- Excluded patterns -->
+	<exclude-pattern>.*/generatedContract/.*</exclude-pattern>
+
+	<!-- Customized Rules -->
+	<rule ref="category/java/design.xml/ExcessiveClassLength">
+		<properties>
+			<property name="minimum" value="500" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/ExcessiveMethodLength">
+		<properties>
+			<property name="minimum" value="35" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/ExcessiveParameterList">
+		<properties>
+			<property name="minimum" value="30" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/ExcessivePublicCount">
+		<properties>
+			<property name="minimum" value="60" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/TooManyFields">
+		<properties>
+			<property name="maxfields" value="30" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/TooManyMethods">
+		<properties>
+			<property name="maxmethods" value="20" />
+		</properties>
+	</rule>
+	<rule ref="category/java/design.xml/ExcessiveImports">
+		<properties>
+			<property name="minimum" value="60" />
+		</properties>
+	</rule>
+	<rule ref="category/java/codestyle.xml/TooManyStaticImports">
+		<properties>
+			<property name="maximumStaticImports" value="30" />
+		</properties>
+	</rule>
+	<rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
+		<properties>
+			<property name="maximumAsserts" value="20" />
+		</properties>
+	</rule>
+	<rule ref="category/java/codestyle.xml/LongVariable">
+		<properties>
+			<property name="minimum" value="50"/>
+		</properties>
+	</rule>
+
+	<!--	<rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">-->
+	<!--		<properties>-->
+	<!--			<property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>-->
+	<!--		</properties>-->
+	<!--	</rule>-->
+
+	<rule ref="category/java/design.xml">
+		<exclude name="LawOfDemeter"/>
+		<exclude name="LoosePackageCoupling"/>
+		<exclude name="UseUtilityClass"/>
+		<exclude name="SignatureDeclareThrowsException"/>
+		<exclude name="AvoidCatchingGenericException"/>
+		<exclude name="SignatureDeclareThrowsException"/>
+		<exclude name="DataClass"/>
+	</rule>
+
+	<rule ref="category/java/codestyle.xml">
+		<exclude name="AtLeastOneConstructor"/>
+		<exclude name="DefaultPackage"/>
+		<exclude name="OnlyOneReturn"/>
+		<exclude name="TooManyStaticImports"/>
+		<exclude name="AbstractNaming"/>
+		<exclude name="AvoidDollarSigns"/>
+		<exclude name="MethodArgumentCouldBeFinal"/>
+		<exclude name="ClassNamingConventions"/>
+		<exclude name="UnnecessaryModifier"/>
+		<exclude name="UseDiamondOperator"/>
+		<exclude name="IdenticalCatchBranches"/>
+		<exclude name="CommentDefaultAccessModifier"/>
+		<exclude name="LinguisticNaming"/>
+		<exclude name="UseShortArrayInitializer"/>
+	</rule>
+
+	<rule ref="category/java/errorprone.xml">
+		<exclude name="NullAssignment"/>
+		<exclude name="NonStaticInitializer"/>
+		<exclude name="BeanMembersShouldSerialize"/>
+		<exclude name="InvalidLogMessageFormat"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+	</rule>
+
+	<rule ref="category/java/bestpractices.xml">
+		<exclude name="AbstractClassWithoutAbstractMethod"/>
+		<exclude name="AccessorMethodGeneration"/>
+		<exclude name="MethodReturnsInternalArray"/>
+		<exclude name="ArrayIsStoredDirectly"/>
+		<exclude name="GuardLogStatement"/>
+	</rule>
+
+	<rule ref="category/java/performance.xml"/>
+
+	<rule ref="category/java/multithreading.xml"/>
+
+	<rule ref="category/java/documentation.xml">
+		<exclude name="CommentRequired"/>
+		<exclude name="CommentSize" />
+		<exclude name="UncommentedEmptyConstructor"/>
+	</rule>
+</ruleset>

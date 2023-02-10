@@ -1,10 +1,13 @@
 package com.lexisnexis.tms.entity;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,10 +23,10 @@ public class WorkHistory {
     private String comments;
     @Column(name = "login_at")
     private LocalDateTime loginAt;
-    @Column(name="createdTimestamp")
+    @Column(name = "createdTimestamp")
     @CreationTimestamp
     private LocalDateTime createdTimestamp;
-    @Column(name="lastUpdatedTimestamp")
+    @Column(name = "lastUpdatedTimestamp")
     @UpdateTimestamp
     private LocalDateTime lastUpdatedTimestamp;
 
