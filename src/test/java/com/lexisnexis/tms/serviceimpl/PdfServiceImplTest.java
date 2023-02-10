@@ -29,12 +29,12 @@ class PdfServiceImplTest {
     @BeforeAll
     public void init() {
         MockitoAnnotations.initMocks(this);
-        workHistoryList=new ArrayList<>();
-        WorkHistory workHistoryUser1=new WorkHistory();
+        workHistoryList = new ArrayList<>();
+        WorkHistory workHistoryUser1 = new WorkHistory();
         workHistoryUser1.setUserName("ravikant");
         workHistoryUser1.setWorkingArea("Registration of TMS");
         workHistoryUser1.setComments("Done..");
-        WorkHistory workHistoryUser2=new WorkHistory();
+        WorkHistory workHistoryUser2 = new WorkHistory();
         workHistoryUser2.setUserName("Prem");
         workHistoryUser2.setWorkingArea("Registration of TMS");
         workHistoryUser2.setComments("Done..");
@@ -45,6 +45,6 @@ class PdfServiceImplTest {
     @Test
     void testGetAllWillReturnAllWorkHistory() {
         Mockito.when(workHistoryRepository.findAll()).thenReturn(workHistoryList);
-        assertEquals(2,pdfServiceimpl.getAll() == null ? 0 : pdfServiceimpl.getAll().size());
+        assertEquals(2, pdfServiceimpl.getAll() == null ? 0 : pdfServiceimpl.getAll().size());
     }
 }

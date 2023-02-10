@@ -16,14 +16,6 @@ import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,26 +52,13 @@ public class UserController {
     PdfService pdfService;
 
     @Autowired
-    private JobLauncher jobLauncher;
-
-    @Autowired
     UserPdfExporter userPdfExporter;
-
-    @Autowired
-    private Job job;
-
 
     private static Logger logger = LogManager.getLogger();
 
     @PostMapping("/importUsers")
-    public void importCsvToDBJob() {
-        final JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
-        try {
-            jobLauncher.run(job, jobParameters);
-        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException batchException) {
-            logger.info(batchException.getMessage());
-        }
+    public void springbatchCSVtoRegisterUser() {
+        userService.springbatchCSVtoRegisterUser();
     }
 
 
@@ -98,9 +77,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<APIResponse> login(@RequestBody @Valid LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException {
-        final APIResponse login = loginService.login(loginDto);
-        return ResponseEntity.status(login == null ? HttpStatus.NOT_FOUND : HttpStatus.OK).body(login);
+    public APIResponse login(@RequestBody @Valid LoginDto loginDto) throws InterruptedException, NoSuchAlgorithmException {
+        return loginService.login(loginDto);
     }
 
     @GetMapping("/users/report")

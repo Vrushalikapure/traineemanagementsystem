@@ -1,11 +1,10 @@
 package com.lexisnexis.tms.advice;
 
-import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
-import com.lexisnexis.tms.exception.UserNotLoginExceptions;
-import com.lexisnexis.tms.exception.UserAppError;
-import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
 import com.lexisnexis.tms.exception.UserNameAlreadyExistException;
-
+import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
+import com.lexisnexis.tms.exception.UserAppError;
+import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;

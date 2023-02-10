@@ -25,6 +25,7 @@ public class ApplicationExceptionHandler {
         });
         return errorMap;
     }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserNotFoundException.class)
     public Map<String, String> handleBusinessException(UserNotFoundException userNotFoundException) {
@@ -43,11 +44,12 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserAlreadyHasAccount.class)
-    public Map<String,String> employeeAlreadyHaveAccount(UserAlreadyHasAccount userAccount){
-        final ConcurrentHashMap<String,String> map=new ConcurrentHashMap<String, String>();
-        map.put("error",userAccount.getMessage());
+    public Map<String, String> employeeAlreadyHaveAccount(UserAlreadyHasAccount userAccount) {
+        final ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
+        map.put("error", userAccount.getMessage());
         return map;
     }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserNotLoginException.class)
     public Map<String, String> userNotLogin(UserNotLoginException userNotLoginException) {

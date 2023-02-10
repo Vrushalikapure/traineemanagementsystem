@@ -6,7 +6,7 @@ import com.lexisnexis.tms.dto.LoginDto;
 import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.repository.LoginRepository;
+import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.response.APIResponse;
 import com.lexisnexis.tms.services.LoginService;
 import com.lexisnexis.tms.services.PdfService;
@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -46,42 +45,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class UserControllerTest {
-    @InjectMocks
-    UserController userController;
-
 
     @Autowired
     MockMvc mockmvc;
 
     @Mock
     UserService userService;
+    @Mock
+    LoginService loginService;
 
     @Mock
     PasswEncrypt passwEncrypt;
 
     @Mock
-    LoginService loginService;
-
-    @Mock
     PdfService pdfService;
+    @Mock
+    UserRepository userRepository;
 
     @Mock
-    LoginRepository loginRepository;
+    private UserPdfExporter userPdfExporter;
 
-    @Mock
-    private UserPdfExporter userPdfExporter ;
-
+    @InjectMocks
+    UserController userController;
     private UserEntity testUser;
 
     private WorkHistory testWorkHistory;
 
     private LoginDto testloginUser;
 
-    private UserLogin testLoggedInUser;
-
-    private APIResponse apiResponse;
-
-    private  List<WorkHistory> workHistoryList;
+    private List<WorkHistory> workHistoryList;
 
     private List<UserEntity> userDetailsList;
 
@@ -109,37 +101,26 @@ class UserControllerTest {
         testloginUser.setUserName("ravikant");
         testloginUser.setPassword("ravi@123");
 
-        testLoggedInUser = new UserLogin();
-        testLoggedInUser.setIsLocked(Boolean.FALSE);
-        testLoggedInUser.setUserName(testloginUser.getUserName());
-        testLoggedInUser.onSave();
-        testLoggedInUser.setLoginStatus(Boolean.TRUE);
-        testLoggedInUser.setFailureAttempts(0);
-        loginRepository.save(testLoggedInUser);
-
-        workHistoryList=new ArrayList<>();
-        WorkHistory workHistoryUser1=new WorkHistory();
+        workHistoryList = new ArrayList<>();
+        WorkHistory workHistoryUser1 = new WorkHistory();
         workHistoryUser1.setUserName("ravikant");
         workHistoryUser1.setWorkingArea("Registration of TMS");
         workHistoryUser1.setComments("Done..");
-        WorkHistory workHistoryUser2=new WorkHistory();
+        WorkHistory workHistoryUser2 = new WorkHistory();
         workHistoryUser2.setUserName("Prem");
         workHistoryUser2.setWorkingArea("Registration of TMS");
         workHistoryUser2.setComments("Done..");
         workHistoryList.add(workHistoryUser2);
         workHistoryList.add(workHistoryUser1);
 
-        userDetailsList=new ArrayList<>();
+        userDetailsList = new ArrayList<>();
         userDetailsList.add(testUser);
 
-        testChangePassword=new ChangePassword();
+        testChangePassword = new ChangePassword();
         testChangePassword.setOldPassword("Ravi@123");
         testChangePassword.setNewPassword("Ravikant@123");
     }
 
-    @Test
-    void importCsvToDBJob() {
-    }
 
     @Test
     @Order(1)
@@ -148,23 +129,23 @@ class UserControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(testUser);
         mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/register")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     @Order(2)
     void testLogin() throws Exception {
-        apiResponse=new APIResponse();
+        APIResponse apiResponse = new APIResponse();
         apiResponse.setData("UserEntity logged in");
         apiResponse.setStatus(200);
+        apiResponse.setError(null);
         Mockito.when(loginService.login(testloginUser)).thenReturn(apiResponse);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(testloginUser);
         mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/login")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().is(200))
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }
 
@@ -175,14 +156,13 @@ class UserControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(testWorkHistory);
         mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/workHistory")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     @Order(4)
-    void testCreatePdf(@Autowired  MockHttpServletResponse response) throws Exception {
+    void testCreatePdf(@Autowired MockHttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
         final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.ENGLISH);
         final String currentDateTime = dateFormatter.format(new Date());
@@ -190,9 +170,8 @@ class UserControllerTest {
         final String headerValue = "attachment; filename=logWork_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
         Mockito.when(pdfService.getAll()).thenReturn(workHistoryList);
-        Mockito.doNothing().when(userPdfExporter).export(response,workHistoryList);
-        mockmvc.perform(MockMvcRequestBuilders
-                        .get("/tms/api/v1/users/report"))
+        Mockito.doNothing().when(userPdfExporter).export(response, workHistoryList);
+        mockmvc.perform(MockMvcRequestBuilders.get("/tms/api/v1/users/report"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -201,9 +180,7 @@ class UserControllerTest {
     @Order(5)
     void testFetchAllEmpDetail() throws Exception {
         Mockito.when(userService.fetchAllUserDetail()).thenReturn(userDetailsList);
-        mockmvc.perform(MockMvcRequestBuilders
-                        .get("/tms/api/v1/getAllUserDetails")
-                )
+        mockmvc.perform(MockMvcRequestBuilders.get("/tms/api/v1/getAllUserDetails"))
                 .andDo(print())
                 .andExpect(status().isAccepted());
     }
@@ -212,9 +189,7 @@ class UserControllerTest {
     @Order(6)
     void testGetData() throws Exception {
         Mockito.when(userService.getDataByUserName("ravikant")).thenReturn(testUser);
-        mockmvc.perform(MockMvcRequestBuilders
-                        .get("/tms/api/v1//getDataByUsername/ravikant")
-                )
+        mockmvc.perform(MockMvcRequestBuilders.get("/tms/api/v1//getDataByUsername/ravikant"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -234,8 +209,7 @@ class UserControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(testUser);
         mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/updateUser")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
 //                .andExpect(content().string("UserEntity Data updated successfully"));
                 .andExpect(status().isAccepted());
@@ -248,28 +222,27 @@ class UserControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(testUser);
         mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/forgotPassword")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test
     @Order(9)
     void testChangePassword() throws Exception {
-        testChangePassword=new ChangePassword();
+        testChangePassword = new ChangePassword();
         testChangePassword.setOldPassword("Ravi@123");
         testChangePassword.setNewPassword("Ravikant@123");
-        Mockito.when(userService.changePassword("ravikant",testChangePassword)).thenReturn("Password Changed successfully");
-        mockmvc.perform(
-                        MockMvcRequestBuilders.post("/tms/api/v1/changePassword/ravikant")
+        Mockito.when(userService.changePassword("ravikant", testChangePassword)).thenReturn("Password Changed successfully");
+        mockmvc.perform(MockMvcRequestBuilders.post("/tms/api/v1/changePassword/ravikant")
                                 .content(JSONObject.toJSONString(
                                         Map.of("newPassword", "ravi@12345",
                                                 "oldPassword", "ravi@123")))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
 //                .andExpect(content().string("Password Changed successfully"));
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andDo(print());
     }
+
     @Test
     @Order(10)
     void testDeleteDataByUserName() throws Exception {
@@ -278,5 +251,14 @@ class UserControllerTest {
                         .delete("/tms/api/v1/deleteDataByUsername/ravikant"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.content().string("UserEntity removed successfully ravikant"));
+    }
+
+    @Test
+    @Order(11)
+    void importCsvToDBJob() throws Exception {
+        Mockito.doNothing().when(userService).springbatchCSVtoRegisterUser();
+        mockmvc.perform(MockMvcRequestBuilders
+                        .post("/tms/api/v1/importUsers"))
+                .andExpect(status().is2xxSuccessful()).andDo(print());
     }
 }

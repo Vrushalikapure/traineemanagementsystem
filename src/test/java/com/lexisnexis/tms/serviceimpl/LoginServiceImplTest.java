@@ -45,79 +45,130 @@
 
 package com.lexisnexis.tms.serviceimpl;
 
+import com.lexisnexis.tms.dto.LoginDto;
+import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
+import com.lexisnexis.tms.response.APIResponse;
 import com.lexisnexis.tms.util.PasswEncrypt;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
 
 import java.security.NoSuchAlgorithmException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class LoginServiceImplTest {
-
-    @InjectMocks
-    LoginServiceImpl loginServiceimpl;
-
-    @Mock
+public class LoginServiceImplTest {
     UserRepository userRepository;
-    @Mock
-    UserLogin userLogin;
-    @Mock
     LoginRepository loginRepository;
-    @Mock
+    LoginServiceImpl loginServiceImpl;
     PasswEncrypt passwEncrypt;
+    APIResponse apiResponse;
+    UserLogin userLogin;
+    LoginDto loginDto;
 
-    @BeforeAll
-    public void init() {
-        MockitoAnnotations.openMocks(this);
+    @BeforeEach
+    private void initializeLoginServiceImpl() {
+        userRepository = mock(UserRepository.class);
+        loginRepository = mock(LoginRepository.class);
+        passwEncrypt = mock(PasswEncrypt.class);
+        apiResponse = mock(APIResponse.class);
+        userLogin = mock(UserLogin.class);
+        loginDto = mock(LoginDto.class);
+        loginServiceImpl = new LoginServiceImpl(userRepository, loginRepository, passwEncrypt, userLogin);
     }
 
     @Test
-    void login() throws NoSuchAlgorithmException {
-//        UserEntity userEntity=new UserEntity();
-//        userEntity.setUserName("ravikant");
-//        userEntity.setFirstName("Ravikant");
-//        userEntity.setLastName("Madas");
-//        userEntity.setEmail("ravi@gmail.com");
-//        userEntity.setMobileNo("9175950073");
-//        userEntity.setPassword("Ravi@123");
-//        userEntity.setLocation("Solapur");
-//        LoginDto loginDto=new LoginDto();
-//        loginDto.setUserName("ravikant");
-//        loginDto.setPassword("ravi@123");
-//        Mockito.when(userRepository.findByUserName("ravikant")).thenReturn(userEntity);
-//        Mockito.when(userLogin.getIsLocked()).thenReturn(false);
-//        Mockito.when(passwEncrypt.encryptPass(loginDto.getPassword())).thenReturn("e58cc3fe4b3387c893c8fc9dd43a829a");
-//        assertEquals(200,loginServiceimpl.login(loginDto).getStatus());
-    }
-    @Test
-    void loginUseerNotExists() throws NoSuchAlgorithmException {
-//        UserEntity userEntity= new UserEntity();
-//        LoginDto loginDto=new LoginDto();
-//        loginDto.setUserName("ravikant");
-//        loginDto.setPassword("ravi@123");
-//        Mockito.when(userRepository.findByUserName("ravikant")).thenReturn(userEntity);
-//        Mockito.when(userLogin.getIsLocked()).thenReturn(false);
-//        Mockito.when(passwEncrypt.encryptPass(loginDto.getPassword())).thenReturn("e58cc3fe4b3387c893c8fc9dd43a829a");
-//        assertEquals(200,loginServiceimpl.login(loginDto).getStatus());
+    public void userLoginWithInValidPassword() throws NoSuchAlgorithmException, InterruptedException {
+        int maxAttempts = 4;
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserName("vrushali");
+        loginDto.setPassword("6789");
+        UserLogin userLogin = new UserLogin();
+        userLogin.setIsLocked(false);
+        userLogin.setFailureAttempts(1);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName("vrushali");
+        userEntity.setPassword("1234");
+        when(userRepository.findByUserName("vrushali")).thenReturn(userEntity);
+        when(loginRepository.findByUserName("vrushali")).thenReturn(userLogin);
+        LoginServiceImpl loginServiceImpl = new LoginServiceImpl(userRepository, loginRepository, passwEncrypt, userLogin);
+        loginServiceImpl.login(loginDto);
     }
 
     @Test
-    void failureAttempt() {
+    public void userLoginWithInValidPasswordAndFailureAttemptsIs4() throws NoSuchAlgorithmException, InterruptedException {
+        int maxAttempts = 4;
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserName("vrushali");
+        loginDto.setPassword("7876");
+        UserLogin userLogin = new UserLogin();
+        userLogin.setFailureAttempts(4);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName("vrushali");
+        userEntity.setPassword("1234");
+        when(userRepository.findByUserName("vrushali")).thenReturn(userEntity);
+        when(loginRepository.findByUserName("vrushali")).thenReturn(userLogin);
+
+        LoginServiceImpl loginServiceImpl = new LoginServiceImpl(userRepository, loginRepository, passwEncrypt, userLogin);
+        loginServiceImpl.login(loginDto);
     }
 
     @Test
-    void timeCheck() {
-
+    public void userLoginWithValidPassword() throws NoSuchAlgorithmException, InterruptedException {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserName("vrushali");
+        loginDto.setPassword("1234");
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName("vrushali");
+        userEntity.setPassword("1234");
+        UserLogin userLogin = new UserLogin();
+        userLogin.setFailureAttempts(1);
+        userLogin.setIsLocked(false);
+        when(userRepository.findByUserName("vrushali")).thenReturn(userEntity);
+        LoginServiceImpl loginServiceImpl = new LoginServiceImpl(userRepository, loginRepository, passwEncrypt, userLogin);
+        loginServiceImpl.login(loginDto);
     }
+
+    @Test
+    public void userLoginWhenUserIsNull() throws NoSuchAlgorithmException {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserName("abcd");
+        loginDto.setPassword("1234");
+        UserEntity userEntity = new UserEntity();
+        UserRepository userRepository = mock(UserRepository.class);
+        userRepository.save(userEntity);
+        when(userRepository.findByUserName("abcd")).thenReturn(userEntity);
+        loginServiceImpl.login(loginDto);
+    }
+
+    @Test
+    public void userLoginWhenIsLockedTrueTest() throws NoSuchAlgorithmException, InterruptedException {
+        int maxAttempts = 4;
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserName("vrushali");
+        loginDto.setPassword("7876");
+        UserLogin userLogin = new UserLogin();
+        userLogin.setIsLocked(true);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName("vrushali");
+        userEntity.setPassword("7876");
+        when(userRepository.findByUserName("vrushali")).thenReturn(userEntity);
+        when(loginRepository.findByUserName("vrushali")).thenReturn(userLogin);
+        LoginServiceImpl loginServiceImpl = new LoginServiceImpl(userRepository, loginRepository, passwEncrypt, userLogin);
+        loginServiceImpl.login(loginDto);
+    }
+
+    @Test
+    public void testtimeCheck() {
+        loginServiceImpl=mock(LoginServiceImpl.class);
+        Mockito.doNothing().when(loginServiceImpl).timeCheck();
+        loginServiceImpl.timeCheck();
+    }
+
 }

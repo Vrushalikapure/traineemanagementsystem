@@ -4,12 +4,12 @@ import com.lexisnexis.tms.dto.ChangePassword;
 import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.UserLogin;
 import com.lexisnexis.tms.entity.WorkHistory;
-import com.lexisnexis.tms.exception.UserNotFoundException;
-import com.lexisnexis.tms.exception.UserNotLoginException;
-import com.lexisnexis.tms.exception.UserNotLoginExceptions;
-import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
-import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
 import com.lexisnexis.tms.exception.UserNameAlreadyExistException;
+import com.lexisnexis.tms.exception.UserNotLoginException;
+import com.lexisnexis.tms.exception.UserNotFoundException;
+import com.lexisnexis.tms.exception.UserNamedoesNotMatchException;
+import com.lexisnexis.tms.exception.UserPasswordDoesNotMatching;
+import com.lexisnexis.tms.exception.UserNotLoginExceptions;
 import com.lexisnexis.tms.repository.LoginRepository;
 import com.lexisnexis.tms.repository.UserRepository;
 import com.lexisnexis.tms.repository.WorkHistoryRepository;
@@ -17,6 +17,14 @@ import com.lexisnexis.tms.services.UserService;
 import com.lexisnexis.tms.util.PasswEncrypt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -41,6 +49,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PasswEncrypt passwEncrypt;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+    @Autowired
+    private Job job;
 
     private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
@@ -84,6 +97,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public CompletableFuture<UserEntity> getUserByUserName(String userName) throws UserNotFoundException {
         return CompletableFuture.completedFuture(getDataByUserName(userName));
+    }
+
+    @Override
+    public void springbatchCSVtoRegisterUser() {
+        final JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(job, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException batchException) {
+            LOGGER.info(batchException.getMessage());
+        }
     }
 
     @Override

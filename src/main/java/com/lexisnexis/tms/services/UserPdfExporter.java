@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserPdfExporter {
 
-    void export(HttpServletResponse response, List<WorkHistory> workHistoryList) throws  IOException;
+    void export(HttpServletResponse response, List<WorkHistory> workHistoryList) throws IOException;
 
 }

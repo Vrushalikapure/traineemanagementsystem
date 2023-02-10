@@ -32,4 +32,6 @@ public interface UserService {
     WorkHistory updateWorkHistory(WorkHistory workHistory) throws UserNotLoginException, UserNotFoundException;
 
     public CompletableFuture<UserEntity> getUserByUserName(String userName) throws UserNotFoundException;
+
+    void springbatchCSVtoRegisterUser();
 }

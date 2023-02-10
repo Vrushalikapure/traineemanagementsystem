@@ -14,7 +14,6 @@ public class ChangePassword {
     @NotNull(message = "newPassword cannot be empty!")
     private String newPassword;
 
-
     public String getOldPassword() {
         return oldPassword;
     }

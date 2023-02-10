@@ -265,7 +265,7 @@ public class UserServiceImplTest {
         com.lexisnexis.tms.entity.UserEntity usere = new UserEntity();
         usere.setPassword("sam");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setNewPassword( "samm");
+        changePassword.setNewPassword("samm");
         changePassword.setOldPassword("sam");
         when(loginRepository.findByUserName("sam")).thenReturn(user);
         when(userRepository.findByUserName("sam")).thenReturn(usere);
@@ -283,7 +283,7 @@ public class UserServiceImplTest {
         com.lexisnexis.tms.entity.UserEntity usere = new UserEntity();
         usere.setPassword("sam");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setNewPassword( "samm");
+        changePassword.setNewPassword("samm");
         changePassword.setOldPassword("sam");
         when(loginRepository.findByUserName("sam")).thenReturn(user);
         when(userRepository.findByUserName("sam")).thenReturn(usere);

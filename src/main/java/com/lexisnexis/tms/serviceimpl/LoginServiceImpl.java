@@ -35,22 +35,27 @@ public class LoginServiceImpl implements LoginService {
     long lockTime = 05 * 60 * 1000;
     String username;
 
+    public LoginServiceImpl(UserRepository userRepository, LoginRepository loginRepository, PasswEncrypt passwEncrypt, UserLogin userLogin) {
+        this.userRepository = userRepository;
+        this.loginRepository = loginRepository;
+        this.passwEncrypt = passwEncrypt;
+        this.userLogin = userLogin;
+    }
+
     @Override
     public APIResponse login(LoginDto loginDto) throws NoSuchAlgorithmException {
         final APIResponse apiResponse = new APIResponse();
         final UserEntity user1 = userRepository.findByUserName(loginDto.getUserName());
-        LOGGER.debug("-------------------" + user1 + "----------------" + userLogin.getUserName() + userLogin.getIsLocked());
-        final String password = passwEncrypt.encryptPass(loginDto.getPassword());
-//        final boolean userPassword = !user1.getPassword().equals(password);
-        final boolean userIsLocked = userLogin != null && userLogin.getIsLocked() != null && userLogin.getIsLocked();
-        final boolean userLogin1 = user1 != null || !userIsLocked;
-        final boolean failedAttempt= user1 != null && !user1.getPassword().equals(password);
         if (user1 == null) {
-            apiResponse.setData("UserEntity not exists please Register");
+            apiResponse.setData("User not exists please Register");
             return apiResponse;
-        } else if (failedAttempt) {
+        }
+        final boolean userPassword = !(user1.getPassword()).equals(loginDto.getPassword());
+        final boolean login = user1 != null || !userLogin.getIsLocked();
+        final boolean failedAttempt = user1 != null && !user1.getPassword().equals(userPassword);
+        if (failedAttempt) {
             return failureAttempt(loginDto);
-        } else if (userLogin1) {
+        } else if (login) {
             LOGGER.info("UserEntity logged in");
             apiResponse.setData("UserEntity logged in");
             username = user1.getUserName();

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UserBatchProcessor implements ItemProcessor<UserEntity, UserEntity> {
     @Autowired
     PasswEncrypt passwEncrypt;
+
     @Override
     public UserEntity process(UserEntity userEntity) throws Exception {
         userEntity.setPassword(passwEncrypt.encryptPass(userEntity.getPassword()));
-      return  userEntity;
+        return userEntity;
     }
 }

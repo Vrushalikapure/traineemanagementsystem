@@ -2,7 +2,6 @@ package com.lexisnexis.tms;
 
 import com.lexisnexis.tms.entity.UserEntity;
 import com.lexisnexis.tms.entity.WorkHistory;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -25,7 +24,7 @@ public interface BaseTest {
 
     @BeforeAll
     @BeforeEach
-    default void clearMocks(){
+    default void clearMocks() {
         Mockito.framework().clearInlineMocks();
         MockitoAnnotations.initMocks(this);
     }
@@ -40,7 +39,7 @@ public interface BaseTest {
         @Override
         public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
             WorkHistory workHistory = new WorkHistory();
-            workHistory.setLoginAt(LocalDateTime.of(2023, 1, 31,0, 0));
+            workHistory.setLoginAt(LocalDateTime.of(2023, 1, 31, 0, 0));
             workHistory.setComments("working hard");
             workHistory.setUserName("admin1");
             workHistory.setWorkingArea("some working area");

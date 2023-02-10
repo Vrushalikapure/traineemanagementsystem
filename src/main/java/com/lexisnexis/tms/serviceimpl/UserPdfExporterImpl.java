@@ -41,7 +41,7 @@ public class UserPdfExporterImpl implements UserPdfExporter {
     @Override
     public void export(HttpServletResponse response, List<WorkHistory> workHistoryList) throws UserNotFoundException {
 
-        try(Document document = new Document(PageSize.A4)) {
+        try (Document document = new Document(PageSize.A4)) {
             PdfWriter.getInstance(document, response.getOutputStream());
             final PdfPTable ptable = new PdfPTable(4);
             ptable.setWidthPercentage(100);
@@ -50,8 +50,7 @@ public class UserPdfExporterImpl implements UserPdfExporter {
             document.open();
             document.add(new Paragraph("list of users"));
             document.add(ptable);
-        }
-        catch (IOException exception){
+        } catch (IOException exception) {
             logger.error(exception.getMessage());
         }
     }
@@ -72,9 +71,8 @@ public class UserPdfExporterImpl implements UserPdfExporter {
         logger.info("getting data in {} mode for writing to pdf", async ? "Async" : "Sync");
         final long timeBefore = System.currentTimeMillis();
         final Map<String, CompletableFuture<UserEntity>> completableFutureUserMap = new ConcurrentHashMap<>();
-        if(async)
-        {
-            for (final WorkHistory workHistory: workHistoryList){
+        if (async) {
+            for (final WorkHistory workHistory : workHistoryList) {
                 completableFutureUserMap.put(workHistory.getUserName(), userService.getUserByUserName(workHistory.getUserName()));
             }
         }
@@ -83,14 +81,13 @@ public class UserPdfExporterImpl implements UserPdfExporter {
             ptable.addCell(user.getUserName());
             ptable.addCell(user.getWorkingArea());
             ptable.addCell(user.getComments());
-            if(async) {
+            if (async) {
                 try {
                     ptable.addCell(completableFutureUserMap.get(user.getUserName()).get().getLocation());
                 } catch (InterruptedException | ExecutionException e) {
                     logger.info("got an exception trying to fetch user information for %s", user.getUserName());
                 }
-            }
-            else {
+            } else {
                 ptable.addCell(userService.getDataByUserName(user.getUserName()).getLocation());
             }
         }
